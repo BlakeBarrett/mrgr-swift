@@ -64,8 +64,11 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
 
     var tempVideoPath:NSURL?
     var videoPrepared:Bool = false
-    func prepareVideo() -> Bool {
+    func prepareVideo(supressNotification:Bool) -> Bool {
         if self.videoPrepared {
+            if !supressNotification {
+                NSNotificationCenter.defaultCenter().postNotificationName("videoExportDone", object: self.tempVideoPath)
+            }
             return true
         }
         
@@ -81,22 +84,22 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     }
     
     @IBAction func onPlayClicked(sender: UIBarButtonItem) {
-        
-        if !self.prepareVideo() { return }
-        
-        let videoPreviewer = VideoPreviewerViewController(nibName: "VideoPreviewView", bundle: NSBundle.mainBundle())
-        
         NSNotificationCenter.defaultCenter().addObserverForName("videoExportDone", object: nil, queue: NSOperationQueue.mainQueue()) {message in
+            self.hideSpinner()
             if let url = message.object as? NSURL {
+                let videoPreviewer = VideoPreviewerViewController(nibName: "VideoPreviewView", bundle: NSBundle.mainBundle())
                 videoPreviewer.url = url
                 self.presentViewController(videoPreviewer, animated: true, completion: nil)
             }
         }
+        self.prepareVideo(false)
     }
     
     @IBAction func onActionSelected(sender: UIBarButtonItem) {
         
-        if !self.prepareVideo() { return }
+        if !self.videoPrepared {
+            self.prepareVideo(true)
+        }
         
         guard let videoPath = self.tempVideoPath else { return }
         let activity = UIActivityViewController(activityItems: [videoPath], applicationActivities: nil)
@@ -213,6 +216,21 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         }
     }
     
+    var loadingIndicatorView: ProgressViewController?
+    func showSpinner() {
+        //LoadingIndicatorView
+        self.loadingIndicatorView = ProgressViewController(nibName: "ProgressIndicatorView", bundle: NSBundle.mainBundle())
+        loadingIndicatorView!.modalPresentationStyle = .OverCurrentContext
+        self.presentViewController(loadingIndicatorView!, animated: true, completion: nil)
+    }
+    
+    func hideSpinner() {
+        guard let loadingIndicatorView = self.loadingIndicatorView else { return }
+        loadingIndicatorView.dismissViewControllerAnimated(true, completion: {
+            
+        })
+    }
+    
     // MARK: AVFoundation Video Manipulation Code
     
     func thumbnailImageForVideo(url:NSURL) -> UIImage? {
@@ -237,31 +255,33 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         let mixComposition = AVMutableComposition()
         
         let videoTrack = mixComposition.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: kCMPersistentTrackID_Invalid)
+        let audioTrack = mixComposition.addMutableTrackWithMediaType(AVMediaTypeAudio, preferredTrackID: kCMPersistentTrackID_Invalid)
         
         let firstAssetTimeRange = CMTimeRangeMake(kCMTimeZero, firstAsset.duration)
         let secondAssetTimeRange = CMTimeRangeMake(kCMTimeZero, secondAsset.duration)
         
         guard let firstMediaTrack = firstAsset.tracksWithMediaType(AVMediaTypeVideo).first else { return false }
+        let firstAudioTrack = firstAsset.tracksWithMediaType(AVMediaTypeAudio).first
+        
         guard let secondMediaTrack = secondAsset.tracksWithMediaType(AVMediaTypeVideo).first else { return false }
+        let secondAudioTrack = secondAsset.tracksWithMediaType(AVMediaTypeAudio).first
         
         do {
-            try videoTrack.insertTimeRange(firstAssetTimeRange , ofTrack: firstMediaTrack, atTime: kCMTimeZero)
+            try videoTrack.insertTimeRange(firstAssetTimeRange, ofTrack: firstMediaTrack, atTime: kCMTimeZero)
+            if let _ = firstAudioTrack {
+                try audioTrack.insertTimeRange(firstAssetTimeRange, ofTrack: firstAudioTrack!, atTime: kCMTimeZero)
+            }
             try videoTrack.insertTimeRange(secondAssetTimeRange, ofTrack: secondMediaTrack, atTime: kCMTimeZero)
+            if let _ = secondAudioTrack {
+                try audioTrack.insertTimeRange(secondAssetTimeRange, ofTrack: secondAudioTrack!, atTime: kCMTimeZero)
+            }
         } catch (let error) {
             print(error)
             return false
         }
         
-        self.exportCompositedVideo(mixComposition, toURL: outputUrl, withVideoComposition: nil)
-        return true
-    }
-    
-    func exportCompositedVideo(compiledVideo: AVMutableComposition, toURL outputUrl: NSURL, withVideoComposition videoComposition: AVMutableVideoComposition?) {
-        guard let exporter = AVAssetExportSession(asset: compiledVideo, presetName: AVAssetExportPresetHighestQuality) else { return }
+        guard let exporter = AVAssetExportSession(asset: mixComposition, presetName: AVAssetExportPresetHighestQuality) else { return false }
         exporter.outputURL = outputUrl
-        if let videoComposition = videoComposition {
-            exporter.videoComposition = videoComposition
-        }
         exporter.outputFileType = AVFileTypeQuickTimeMovie
         exporter.shouldOptimizeForNetworkUse = true
         exporter.exportAsynchronouslyWithCompletionHandler({
@@ -298,6 +318,7 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             default: break
             }
         })
+        return true
     }
     
     func getPathForTempFileNamed(filename: String) -> NSURL {

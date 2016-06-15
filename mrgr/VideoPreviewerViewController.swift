@@ -16,6 +16,7 @@ class VideoPreviewerViewController: AVPlayerViewController {
         didSet {
             guard let _ = self.url else { return }
             self.player = AVPlayer(URL: self.url!)
+            self.player?.muted = false
         }
     }
     

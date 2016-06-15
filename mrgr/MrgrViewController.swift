@@ -24,6 +24,7 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.tempVideoPath = getPathForTempFileNamed("temp.mov")
     }
 
     override func didReceiveMemoryWarning() {
@@ -61,12 +62,56 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         }
     }
 
+    var tempVideoPath:NSURL?
+    var videoPrepared:Bool = false
+    func prepareVideo() -> Bool {
+        if self.videoPrepared {
+            return true
+        }
+        
+        guard let _ = self.video1Path else { return false }
+        guard let _ = self.video2Path else { return false }
+        
+        let first = AVURLAsset(URL: self.video1Path!)
+        let second = AVURLAsset(URL: self.video2Path!)
+        
+        self.videoPrepared = self.prepend(video: first, before: second, andExportTo: tempVideoPath!)
+        
+        return self.videoPrepared
+    }
+    
     @IBAction func onPlayClicked(sender: UIBarButtonItem) {
         
+        if !self.prepareVideo() { return }
+        
+        let videoPreviewer = VideoPreviewerViewController(nibName: "VideoPreviewView", bundle: NSBundle.mainBundle())
+        
+        NSNotificationCenter.defaultCenter().addObserverForName("videoExportDone", object: nil, queue: NSOperationQueue.mainQueue()) {message in
+            if let url = message.object as? NSURL {
+                videoPreviewer.url = url
+                self.presentViewController(videoPreviewer, animated: true, completion: nil)
+            }
+        }
     }
     
     @IBAction func onActionSelected(sender: UIBarButtonItem) {
         
+        if !self.prepareVideo() { return }
+        
+        guard let videoPath = self.tempVideoPath else { return }
+        let activity = UIActivityViewController(activityItems: [videoPath], applicationActivities: nil)
+        
+        if (UIDevice.currentDevice().userInterfaceIdiom == .Pad) {
+            let nav = UINavigationController(rootViewController: activity)
+            nav.modalPresentationStyle = .Popover
+            
+            let popover = nav.popoverPresentationController as UIPopoverPresentationController!
+            popover.barButtonItem = sender
+            
+            self.presentViewController(nav, animated: true, completion: nil)
+        } else {
+            self.presentViewController(activity, animated: true, completion: nil)
+        }
     }
     
     // MARK: Video Thumbnail Image Tap Gesutre Recognizer Action Outlets
@@ -83,7 +128,6 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         self.browseForVideo()
     }
     
-    // MARK: 
     func browseForVideo() {
         let picker = UIImagePickerController()
         picker.delegate = self
@@ -95,7 +139,10 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         }
     }
     
+    // MARK: UIImagePicker Delegate methods
+    
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+        self.videoPrepared = false
         var path: NSURL?
         let mediaType = info[UIImagePickerControllerMediaType] as! CFString
         if (mediaType == kUTTypeMovie) {
@@ -128,6 +175,8 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         
         self.video1ImageView.image = selectAVideoImage
         self.video2ImageView.image = selectAVideoImage
+        
+        self.videoPrepared = false
         
         self.disableButtons()
     }
@@ -164,6 +213,8 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         }
     }
     
+    // MARK: AVFoundation Video Manipulation Code
+    
     func thumbnailImageForVideo(url:NSURL) -> UIImage? {
         let asset = AVAsset(URL: url)
         
@@ -179,6 +230,90 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         {
             print("MrgrViewController.getFrameFrom:: Error: \(error)")
             return nil
+        }
+    }
+    
+    func prepend(video secondAsset: AVURLAsset, before firstAsset: AVURLAsset, andExportTo outputUrl: NSURL) -> Bool {
+        let mixComposition = AVMutableComposition()
+        
+        let videoTrack = mixComposition.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: kCMPersistentTrackID_Invalid)
+        
+        let firstAssetTimeRange = CMTimeRangeMake(kCMTimeZero, firstAsset.duration)
+        let secondAssetTimeRange = CMTimeRangeMake(kCMTimeZero, secondAsset.duration)
+        
+        guard let firstMediaTrack = firstAsset.tracksWithMediaType(AVMediaTypeVideo).first else { return false }
+        guard let secondMediaTrack = secondAsset.tracksWithMediaType(AVMediaTypeVideo).first else { return false }
+        
+        do {
+            try videoTrack.insertTimeRange(firstAssetTimeRange , ofTrack: firstMediaTrack, atTime: kCMTimeZero)
+            try videoTrack.insertTimeRange(secondAssetTimeRange, ofTrack: secondMediaTrack, atTime: kCMTimeZero)
+        } catch (let error) {
+            print(error)
+            return false
+        }
+        
+        self.exportCompositedVideo(mixComposition, toURL: outputUrl, withVideoComposition: nil)
+        return true
+    }
+    
+    func exportCompositedVideo(compiledVideo: AVMutableComposition, toURL outputUrl: NSURL, withVideoComposition videoComposition: AVMutableVideoComposition?) {
+        guard let exporter = AVAssetExportSession(asset: compiledVideo, presetName: AVAssetExportPresetHighestQuality) else { return }
+        exporter.outputURL = outputUrl
+        if let videoComposition = videoComposition {
+            exporter.videoComposition = videoComposition
+        }
+        exporter.outputFileType = AVFileTypeQuickTimeMovie
+        exporter.shouldOptimizeForNetworkUse = true
+        exporter.exportAsynchronouslyWithCompletionHandler({
+            switch exporter.status {
+            case .Completed:
+                // we can be confident that there is a URL because
+                // we got this far. Otherwise it would've failed.
+                let url = exporter.outputURL!
+                print("MrgrViewController.exportVideo SUCCESS!")
+                if exporter.error != nil {
+                    print("MrgrViewController.exportVideo Error: \(exporter.error)")
+                    print("MrgrViewController.exportVideo Description: \(exporter.description)")
+                    NSNotificationCenter.defaultCenter().postNotificationName("videoExportDone", object: exporter.error)
+                } else {
+                    NSNotificationCenter.defaultCenter().postNotificationName("videoExportDone", object: url)
+                }
+                
+                break
+                
+            case .Exporting:
+                let progress = exporter.progress
+                print("MrgrViewController.exportVideo \(progress)")
+                
+                NSNotificationCenter.defaultCenter().postNotificationName("videoExportProgress", object: progress)
+                break
+                
+            case .Failed:
+                print("MrgrViewController.exportVideo Error: \(exporter.error)")
+                print("MrgrViewController.exportVideo Description: \(exporter.description)")
+                
+                NSNotificationCenter.defaultCenter().postNotificationName("videoExportDone", object: exporter)
+                break
+                
+            default: break
+            }
+        })
+    }
+    
+    func getPathForTempFileNamed(filename: String) -> NSURL {
+        let outputPath = NSTemporaryDirectory() + filename
+        let outputUrl = NSURL(fileURLWithPath: outputPath)
+        removeTempFileAtPath(outputPath)
+        return outputUrl
+    }
+    
+    func removeTempFileAtPath(path: String) {
+        let fileManager = NSFileManager.defaultManager()
+        if (fileManager.fileExistsAtPath(path)) {
+            do {
+                try fileManager.removeItemAtPath(path)
+            } catch _ {
+            }
         }
     }
     

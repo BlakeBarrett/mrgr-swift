@@ -53,9 +53,9 @@
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="X9w-jd-qh8">
                                 <rect key="frame" x="0.0" y="556" width="600" height="44"/>
                                 <items>
-                                    <barButtonItem enabled="NO" systemItem="trash" id="tA2-vW-mtj">
+                                    <barButtonItem enabled="NO" systemItem="action" id="jIL-Tf-yrz">
                                         <connections>
-                                            <action selector="onTrashClicked:" destination="BYZ-38-t0r" id="Wta-Mv-aB2"/>
+                                            <action selector="onActionSelected:" destination="BYZ-38-t0r" id="Yzi-1r-zcO"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem systemItem="flexibleSpace" id="kdQ-dU-Kak"/>
@@ -65,9 +65,9 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem systemItem="flexibleSpace" id="vHZ-s6-kZq"/>
-                                    <barButtonItem enabled="NO" systemItem="action" id="jIL-Tf-yrz">
+                                    <barButtonItem enabled="NO" systemItem="trash" id="tA2-vW-mtj">
                                         <connections>
-                                            <action selector="onActionSelected:" destination="BYZ-38-t0r" id="Yzi-1r-zcO"/>
+                                            <action selector="onTrashClicked:" destination="BYZ-38-t0r" id="Wta-Mv-aB2"/>
                                         </connections>
                                     </barButtonItem>
                                 </items>

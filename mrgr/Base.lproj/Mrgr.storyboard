@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BYZ-38-t0r">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <scenes>
+        <!--Mrgr View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="MrgrViewController" customModule="mrgr" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="mrgr" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TyI-mK-Ylx">
+                                <rect key="frame" x="20" y="20" width="560" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="Q8u-hg-cW2"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="36"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView tag="1" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Select a Video" translatesAutoresizingMaskIntoConstraints="NO" id="yzg-CR-MfW">
+                                <rect key="frame" x="20" y="72" width="560" height="315"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <gestureRecognizers/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="yzg-CR-MfW" secondAttribute="height" multiplier="16:9" id="Eo8-xy-mD2"/>
+                                </constraints>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="RbA-nO-tPt" appends="YES" id="wxn-SQ-jXx"/>
+                                </connections>
+                            </imageView>
+                            <imageView tag="2" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Select a Video" translatesAutoresizingMaskIntoConstraints="NO" id="vAP-Gh-Khf">
+                                <rect key="frame" x="20" y="395" width="560" height="315"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <gestureRecognizers/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="vAP-Gh-Khf" secondAttribute="height" multiplier="16:9" id="kt4-t5-wzb"/>
+                                </constraints>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="iZo-2E-XJv" appends="YES" id="mKp-9u-iVa"/>
+                                </connections>
+                            </imageView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="X9w-jd-qh8">
+                                <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                                <items>
+                                    <barButtonItem enabled="NO" systemItem="trash" id="tA2-vW-mtj">
+                                        <connections>
+                                            <action selector="onTrashClicked:" destination="BYZ-38-t0r" id="Wta-Mv-aB2"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem systemItem="flexibleSpace" id="kdQ-dU-Kak"/>
+                                    <barButtonItem enabled="NO" systemItem="play" id="JJK-7u-Kb2">
+                                        <connections>
+                                            <action selector="onPlayClicked:" destination="BYZ-38-t0r" id="B84-m1-Uec"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem systemItem="flexibleSpace" id="vHZ-s6-kZq"/>
+                                    <barButtonItem enabled="NO" systemItem="action" id="jIL-Tf-yrz">
+                                        <connections>
+                                            <action selector="onActionSelected:" destination="BYZ-38-t0r" id="Yzi-1r-zcO"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                                <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="barTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </toolbar>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="X9w-jd-qh8" secondAttribute="trailing" id="1AM-oP-i3x"/>
+                            <constraint firstItem="vAP-Gh-Khf" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="1rQ-fW-0Wg"/>
+                            <constraint firstItem="TyI-mK-Ylx" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="FZY-JE-hoL"/>
+                            <constraint firstItem="vAP-Gh-Khf" firstAttribute="top" secondItem="yzg-CR-MfW" secondAttribute="bottom" constant="8" id="GR3-ho-fc5"/>
+                            <constraint firstItem="yzg-CR-MfW" firstAttribute="top" secondItem="TyI-mK-Ylx" secondAttribute="bottom" constant="8" id="J7T-2s-Qpw"/>
+                            <constraint firstItem="TyI-mK-Ylx" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="LYG-Bh-lWX"/>
+                            <constraint firstItem="yzg-CR-MfW" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="Mae-aQ-Kiy"/>
+                            <constraint firstItem="X9w-jd-qh8" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="TuS-kR-KhO"/>
+                            <constraint firstItem="vAP-Gh-Khf" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="XEh-jG-uNZ"/>
+                            <constraint firstItem="yzg-CR-MfW" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="cAy-eF-2EB"/>
+                            <constraint firstItem="TyI-mK-Ylx" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="lhK-Ct-xaM"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="X9w-jd-qh8" secondAttribute="bottom" id="ynC-yG-Ia7"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="actionBarButtonView" destination="jIL-Tf-yrz" id="aw9-io-Ns8"/>
+                        <outlet property="playBarButtonView" destination="JJK-7u-Kb2" id="CHw-i5-7le"/>
+                        <outlet property="trashBarButtonView" destination="tA2-vW-mtj" id="0qS-r8-amK"/>
+                        <outlet property="video1ImageView" destination="yzg-CR-MfW" id="Da3-8v-aCc"/>
+                        <outlet property="video2ImageView" destination="vAP-Gh-Khf" id="L8Q-Ul-279"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="RbA-nO-tPt" userLabel="SelectVideo1TapGestureRecognizer">
+                    <connections>
+                        <action selector="onSelectVideo1TapGestureRecognizer:" destination="BYZ-38-t0r" id="nCg-ek-CVL"/>
+                    </connections>
+                </tapGestureRecognizer>
+                <tapGestureRecognizer id="iZo-2E-XJv" userLabel="SelectVideo2TapGestureRecognizer">
+                    <connections>
+                        <action selector="onSelectVideo2TapGestureRecognizer:" destination="BYZ-38-t0r" id="0sC-Qd-dUP"/>
+                    </connections>
+                </tapGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="301" y="389"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Select a Video" width="400" height="225"/>
+    </resources>
+</document>

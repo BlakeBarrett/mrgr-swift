@@ -5,43 +5,49 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
-        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <viewController storyboardIdentifier="LoadingIndicatorView" title="LoadingIndicatorView" modalPresentationStyle="overCurrentContext" id="tNJ-wG-6m4" customClass="ProgressViewController" customModule="mrgr" customModuleProvider="target">
-            <layoutGuides>
-                <viewControllerLayoutGuide type="top" id="8lg-0g-heS"/>
-                <viewControllerLayoutGuide type="bottom" id="mGV-AE-azR"/>
-            </layoutGuides>
-            <view key="view" autoresizesSubviews="NO" alpha="0.80000001192092896" contentMode="center" restorationIdentifier="LoadingIndicatorView" id="rso-IB-4vh" userLabel="LoadingViewView">
-                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                <subviews>
-                    <activityIndicatorView contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="qSc-zG-1pi">
-                        <rect key="frame" x="282" y="281" width="37" height="37"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                        <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                    </activityIndicatorView>
-                    <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="UOj-Ya-NkK">
-                        <rect key="frame" x="200" y="299" width="200" height="2"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="200" id="Ue8-jX-x5F"/>
-                        </constraints>
-                    </progressView>
-                </subviews>
-                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                <constraints>
-                    <constraint firstItem="qSc-zG-1pi" firstAttribute="centerY" secondItem="rso-IB-4vh" secondAttribute="centerY" id="Y5g-TU-Zme"/>
-                    <constraint firstItem="UOj-Ya-NkK" firstAttribute="centerX" secondItem="rso-IB-4vh" secondAttribute="centerX" id="cJ1-I9-3NO"/>
-                    <constraint firstItem="qSc-zG-1pi" firstAttribute="centerX" secondItem="rso-IB-4vh" secondAttribute="centerX" id="chS-2I-tV6"/>
-                    <constraint firstItem="UOj-Ya-NkK" firstAttribute="centerY" secondItem="rso-IB-4vh" secondAttribute="centerY" id="dw2-PP-Ww5"/>
-                </constraints>
-            </view>
-            <value key="contentSizeForViewInPopover" type="size" width="100" height="100"/>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProgressViewController" customModule="mrgr" customModuleProvider="target">
             <connections>
-                <outlet property="progressBarView" destination="UOj-Ya-NkK" id="gDK-iM-vRs"/>
-                <outlet property="spinnerView" destination="qSc-zG-1pi" id="6GA-CU-Gge"/>
+                <outlet property="spinnerView" destination="76p-lk-A1T" id="T1t-Zg-4hL"/>
+                <outlet property="view" destination="xdz-NE-bT2" id="7L2-6C-kVA"/>
             </connections>
-            <point key="canvasLocation" x="915" y="362"/>
-        </viewController>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="xdz-NE-bT2">
+            <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4lQ-Eq-0GV">
+                    <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                    <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="1eZ-k4-ZRN">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <visualEffectView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="paO-xV-ppd">
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" id="oA9-dc-706">
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                </view>
+                                <vibrancyEffect>
+                                    <blurEffect style="light"/>
+                                </vibrancyEffect>
+                            </visualEffectView>
+                        </subviews>
+                    </view>
+                    <blurEffect style="light"/>
+                </visualEffectView>
+                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" misplaced="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="76p-lk-A1T">
+                    <rect key="frame" x="281" y="281" width="38" height="38"/>
+                </activityIndicatorView>
+            </subviews>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="4lQ-Eq-0GV" firstAttribute="leading" secondItem="xdz-NE-bT2" secondAttribute="leading" id="51D-aG-DXd"/>
+                <constraint firstAttribute="trailing" secondItem="4lQ-Eq-0GV" secondAttribute="trailing" id="7nD-IT-PRE"/>
+                <constraint firstAttribute="bottom" secondItem="4lQ-Eq-0GV" secondAttribute="bottom" id="Skq-Fa-hsh"/>
+                <constraint firstItem="76p-lk-A1T" firstAttribute="centerX" secondItem="4lQ-Eq-0GV" secondAttribute="centerX" id="cvC-NV-Ebg"/>
+                <constraint firstItem="76p-lk-A1T" firstAttribute="centerY" secondItem="4lQ-Eq-0GV" secondAttribute="centerY" id="fwW-xu-v96"/>
+                <constraint firstItem="4lQ-Eq-0GV" firstAttribute="top" secondItem="xdz-NE-bT2" secondAttribute="top" id="taQ-3e-dCP"/>
+            </constraints>
+            <point key="canvasLocation" x="1825" y="420"/>
+        </view>
     </objects>
 </document>

@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		259E08DA1D1122CD00795849 /* VideoPreviewView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 259E08D91D1122CD00795849 /* VideoPreviewView.xib */; };
 		259E08DC1D11237800795849 /* VideoPreviewerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 259E08DB1D11237800795849 /* VideoPreviewerViewController.swift */; };
-		259E08DE1D11F88400795849 /* ProgressIndicatorView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 259E08DD1D11F88400795849 /* ProgressIndicatorView.xib */; };
 		259E08E01D11F8A200795849 /* ProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 259E08DF1D11F8A200795849 /* ProgressViewController.swift */; };
+		25C15D0E1D1226FA00ACB2CF /* ProgressIndicatorView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25C15D0D1D1226FA00ACB2CF /* ProgressIndicatorView.xib */; };
 		25CDA8891D11195400E23022 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CDA8881D11195400E23022 /* AppDelegate.swift */; };
 		25CDA88B1D11195400E23022 /* MrgrViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CDA88A1D11195400E23022 /* MrgrViewController.swift */; };
 		25CDA88E1D11195400E23022 /* Mrgr.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 25CDA88C1D11195400E23022 /* Mrgr.storyboard */; };
@@ -21,8 +21,8 @@
 /* Begin PBXFileReference section */
 		259E08D91D1122CD00795849 /* VideoPreviewView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoPreviewView.xib; sourceTree = "<group>"; };
 		259E08DB1D11237800795849 /* VideoPreviewerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoPreviewerViewController.swift; sourceTree = "<group>"; };
-		259E08DD1D11F88400795849 /* ProgressIndicatorView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProgressIndicatorView.xib; sourceTree = "<group>"; };
 		259E08DF1D11F8A200795849 /* ProgressViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressViewController.swift; sourceTree = "<group>"; };
+		25C15D0D1D1226FA00ACB2CF /* ProgressIndicatorView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProgressIndicatorView.xib; sourceTree = "<group>"; };
 		25CDA8851D11195400E23022 /* mrgr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mrgr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		25CDA8881D11195400E23022 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		25CDA88A1D11195400E23022 /* MrgrViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MrgrViewController.swift; sourceTree = "<group>"; };
@@ -69,7 +69,7 @@
 				259E08D91D1122CD00795849 /* VideoPreviewView.xib */,
 				25CDA88F1D11195400E23022 /* Assets.xcassets */,
 				25CDA8911D11195400E23022 /* LaunchScreen.storyboard */,
-				259E08DD1D11F88400795849 /* ProgressIndicatorView.xib */,
+				25C15D0D1D1226FA00ACB2CF /* ProgressIndicatorView.xib */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -161,7 +161,7 @@
 				25CDA8931D11195400E23022 /* LaunchScreen.storyboard in Resources */,
 				259E08DA1D1122CD00795849 /* VideoPreviewView.xib in Resources */,
 				25CDA8901D11195400E23022 /* Assets.xcassets in Resources */,
-				259E08DE1D11F88400795849 /* ProgressIndicatorView.xib in Resources */,
+				25C15D0E1D1226FA00ACB2CF /* ProgressIndicatorView.xib in Resources */,
 				25CDA88E1D11195400E23022 /* Mrgr.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

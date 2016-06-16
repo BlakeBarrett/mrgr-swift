@@ -25,8 +25,34 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tempVideoPath = getPathForTempFileNamed("temp.mov")
+        
+        NSNotificationCenter.defaultCenter().addObserverForName("videoExportDone", object: nil, queue: NSOperationQueue.mainQueue()) {message in
+            self.hideSpinner()
+            if let url = message.object as? NSURL {
+                if (self.previewing) {
+                    let videoPreviewer = VideoPreviewerViewController(nibName: "VideoPreviewView", bundle: NSBundle.mainBundle())
+                    videoPreviewer.url = url
+                    self.presentViewController(videoPreviewer, animated: true, completion: nil)
+                } else if (self.actioning) {
+                    let activity = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+                    if (UIDevice.currentDevice().userInterfaceIdiom == .Pad) {
+                        let nav = UINavigationController(rootViewController: activity)
+                        nav.modalPresentationStyle = .Popover
+                        
+                        let popover = nav.popoverPresentationController as UIPopoverPresentationController!
+                        popover.barButtonItem = self.actionBarButtonView
+                        
+                        self.presentViewController(nav, animated: true, completion: nil)
+                    } else {
+                        self.presentViewController(activity, animated: true, completion: nil)
+                    }
+                }
+                self.actioning = false
+                self.previewing = false
+            }
+        }
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
@@ -78,42 +104,26 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         let first = AVURLAsset(URL: self.video1Path!)
         let second = AVURLAsset(URL: self.video2Path!)
         
+        self.showSpinner()
+        
         self.videoPrepared = self.prepend(video: first, before: second, andExportTo: tempVideoPath!)
         
         return self.videoPrepared
     }
     
+    var previewing = false
     @IBAction func onPlayClicked(sender: UIBarButtonItem) {
-        NSNotificationCenter.defaultCenter().addObserverForName("videoExportDone", object: nil, queue: NSOperationQueue.mainQueue()) {message in
-            self.hideSpinner()
-            if let url = message.object as? NSURL {
-                let videoPreviewer = VideoPreviewerViewController(nibName: "VideoPreviewView", bundle: NSBundle.mainBundle())
-                videoPreviewer.url = url
-                self.presentViewController(videoPreviewer, animated: true, completion: nil)
-            }
-        }
+        self.previewing = true
+        
         self.prepareVideo(false)
     }
     
+    var actioning = false
     @IBAction func onActionSelected(sender: UIBarButtonItem) {
+        self.actioning = true
         
         if !self.videoPrepared {
             self.prepareVideo(true)
-        }
-        
-        guard let videoPath = self.tempVideoPath else { return }
-        let activity = UIActivityViewController(activityItems: [videoPath], applicationActivities: nil)
-        
-        if (UIDevice.currentDevice().userInterfaceIdiom == .Pad) {
-            let nav = UINavigationController(rootViewController: activity)
-            nav.modalPresentationStyle = .Popover
-            
-            let popover = nav.popoverPresentationController as UIPopoverPresentationController!
-            popover.barButtonItem = sender
-            
-            self.presentViewController(nav, animated: true, completion: nil)
-        } else {
-            self.presentViewController(activity, animated: true, completion: nil)
         }
     }
     

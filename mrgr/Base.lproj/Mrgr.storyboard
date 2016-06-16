@@ -28,9 +28,9 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView tag="1" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Select a Video" translatesAutoresizingMaskIntoConstraints="NO" id="yzg-CR-MfW">
+                            <imageView tag="1" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="circle-plus" translatesAutoresizingMaskIntoConstraints="NO" id="yzg-CR-MfW">
                                 <rect key="frame" x="20" y="72" width="560" height="315"/>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="yzg-CR-MfW" secondAttribute="height" multiplier="16:9" id="Eo8-xy-mD2"/>
@@ -39,9 +39,9 @@
                                     <outletCollection property="gestureRecognizers" destination="RbA-nO-tPt" appends="YES" id="wxn-SQ-jXx"/>
                                 </connections>
                             </imageView>
-                            <imageView tag="2" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Select a Video" translatesAutoresizingMaskIntoConstraints="NO" id="vAP-Gh-Khf">
+                            <imageView tag="2" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="circle-plus" translatesAutoresizingMaskIntoConstraints="NO" id="vAP-Gh-Khf">
                                 <rect key="frame" x="20" y="395" width="560" height="315"/>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="vAP-Gh-Khf" secondAttribute="height" multiplier="16:9" id="kt4-t5-wzb"/>
@@ -115,6 +115,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Select a Video" width="400" height="225"/>
+        <image name="circle-plus" width="165" height="165"/>
     </resources>
 </document>

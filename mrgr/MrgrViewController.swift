@@ -33,7 +33,8 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
                     let videoPreviewer = VideoPreviewerViewController(nibName: "VideoPreviewView", bundle: NSBundle.mainBundle())
                     videoPreviewer.url = url
                     self.presentViewController(videoPreviewer, animated: true, completion: nil)
-                } else if (self.actioning) {
+                }
+                if (self.actioning) {
                     let activity = UIActivityViewController(activityItems: [url], applicationActivities: nil)
                     if (UIDevice.currentDevice().userInterfaceIdiom == .Pad) {
                         let nav = UINavigationController(rootViewController: activity)
@@ -90,11 +91,9 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
 
     var tempVideoPath:NSURL?
     var videoPrepared:Bool = false
-    func prepareVideo(supressNotification:Bool) -> Bool {
+    func prepareVideo() -> Bool {
         if self.videoPrepared {
-            if !supressNotification {
-                NSNotificationCenter.defaultCenter().postNotificationName("videoExportDone", object: self.tempVideoPath)
-            }
+            NSNotificationCenter.defaultCenter().postNotificationName("videoExportDone", object: self.tempVideoPath)
             return true
         }
         
@@ -114,17 +113,13 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     var previewing = false
     @IBAction func onPlayClicked(sender: UIBarButtonItem) {
         self.previewing = true
-        
-        self.prepareVideo(false)
+        self.prepareVideo()
     }
     
     var actioning = false
     @IBAction func onActionSelected(sender: UIBarButtonItem) {
         self.actioning = true
-        
-        if !self.videoPrepared {
-            self.prepareVideo(true)
-        }
+        self.prepareVideo()
     }
     
     // MARK: Video Thumbnail Image Tap Gesutre Recognizer Action Outlets

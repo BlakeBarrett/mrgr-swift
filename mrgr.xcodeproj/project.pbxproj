@@ -7,9 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		251179041D28F21F0008A36E /* Video.swift in Sources */ = {isa = PBXBuildFile; fileRef = 251179031D28F21F0008A36E /* Video.swift */; };
 		259E08DA1D1122CD00795849 /* VideoPreviewView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 259E08D91D1122CD00795849 /* VideoPreviewView.xib */; };
 		259E08DC1D11237800795849 /* VideoPreviewerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 259E08DB1D11237800795849 /* VideoPreviewerViewController.swift */; };
 		259E08E01D11F8A200795849 /* ProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 259E08DF1D11F8A200795849 /* ProgressViewController.swift */; };
+		25B011631D2A450E00014985 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B011621D2A450E00014985 /* TableViewCell.swift */; };
+		25B011651D2A495A00014985 /* EmptyTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25B011641D2A495A00014985 /* EmptyTableViewCell.swift */; };
 		25C15D0E1D1226FA00ACB2CF /* ProgressIndicatorView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25C15D0D1D1226FA00ACB2CF /* ProgressIndicatorView.xib */; };
 		25CDA8891D11195400E23022 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CDA8881D11195400E23022 /* AppDelegate.swift */; };
 		25CDA88B1D11195400E23022 /* MrgrViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25CDA88A1D11195400E23022 /* MrgrViewController.swift */; };
@@ -19,9 +22,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		251179031D28F21F0008A36E /* Video.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Video.swift; sourceTree = "<group>"; };
 		259E08D91D1122CD00795849 /* VideoPreviewView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VideoPreviewView.xib; sourceTree = "<group>"; };
 		259E08DB1D11237800795849 /* VideoPreviewerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoPreviewerViewController.swift; sourceTree = "<group>"; };
 		259E08DF1D11F8A200795849 /* ProgressViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgressViewController.swift; sourceTree = "<group>"; };
+		25B011621D2A450E00014985 /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
+		25B011641D2A495A00014985 /* EmptyTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptyTableViewCell.swift; sourceTree = "<group>"; };
 		25C15D0D1D1226FA00ACB2CF /* ProgressIndicatorView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProgressIndicatorView.xib; sourceTree = "<group>"; };
 		25CDA8851D11195400E23022 /* mrgr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mrgr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		25CDA8881D11195400E23022 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -43,12 +49,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		251179021D28F20F0008A36E /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				251179031D28F21F0008A36E /* Video.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
 		259E08D61D11226200795849 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
 				25CDA88A1D11195400E23022 /* MrgrViewController.swift */,
 				259E08DB1D11237800795849 /* VideoPreviewerViewController.swift */,
 				259E08DF1D11F8A200795849 /* ProgressViewController.swift */,
+				25B011621D2A450E00014985 /* TableViewCell.swift */,
+				25B011641D2A495A00014985 /* EmptyTableViewCell.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -93,6 +109,7 @@
 		25CDA8871D11195400E23022 /* mrgr */ = {
 			isa = PBXGroup;
 			children = (
+				251179021D28F20F0008A36E /* Models */,
 				259E08D81D11228800795849 /* Views */,
 				259E08D61D11226200795849 /* Controllers */,
 				259E08D71D11226D00795849 /* Supporting Files */,
@@ -176,7 +193,10 @@
 				259E08DC1D11237800795849 /* VideoPreviewerViewController.swift in Sources */,
 				25CDA88B1D11195400E23022 /* MrgrViewController.swift in Sources */,
 				25CDA8891D11195400E23022 /* AppDelegate.swift in Sources */,
+				25B011631D2A450E00014985 /* TableViewCell.swift in Sources */,
 				259E08E01D11F8A200795849 /* ProgressViewController.swift in Sources */,
+				25B011651D2A495A00014985 /* EmptyTableViewCell.swift in Sources */,
+				251179041D28F21F0008A36E /* Video.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

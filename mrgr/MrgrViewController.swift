@@ -10,17 +10,15 @@ import UIKit
 import MobileCoreServices
 import AVFoundation
 
-class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet weak var trashBarButtonView: UIBarButtonItem!
     @IBOutlet weak var playBarButtonView: UIBarButtonItem!
     @IBOutlet weak var actionBarButtonView: UIBarButtonItem!
     
-    @IBOutlet weak var video1ImageView: UIImageView!
-    @IBOutlet weak var video2ImageView: UIImageView!
+    @IBOutlet weak var tableView: UITableView!
     
-    var video1Path: NSURL?
-    var video2Path: NSURL?
+    var videos: [Video] = [Video]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,6 +49,10 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
                 self.actioning = false
                 self.previewing = false
             }
+        }
+        
+        NSNotificationCenter.defaultCenter().addObserverForName("addVideoClicked", object: nil, queue: NSOperationQueue.mainQueue()) { item in
+            self.browseForVideo()
         }
     }
     
@@ -97,15 +99,9 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             return true
         }
         
-        guard let _ = self.video1Path else { return false }
-        guard let _ = self.video2Path else { return false }
-        
-        let first = AVURLAsset(URL: self.video1Path!)
-        let second = AVURLAsset(URL: self.video2Path!)
-        
         self.showSpinner()
         
-        self.videoPrepared = self.prepend(video: first, before: second, andExportTo: tempVideoPath!)
+        self.videoPrepared = self.append(self.videos, andExportTo: tempVideoPath!)
         
         return self.videoPrepared
     }
@@ -122,19 +118,30 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         self.prepareVideo()
     }
     
+    // MARK: UITableViewDataSource methods
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.videos.count + 1
+    }
+    
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        if (indexPath.row == videos.count) {
+            let cell = tableView.dequeueReusableCellWithIdentifier("emptyTableViewCellReuseIdentifier", forIndexPath: indexPath)
+            return cell
+        } else {
+            let item = videos[indexPath.row]
+            let cell = tableView.dequeueReusableCellWithIdentifier("mrgrCellReuseIdentifier", forIndexPath: indexPath) as! TableViewCell
+            cell.setVideo(item)
+            return cell
+        }
+    }
+    
     // MARK: Video Thumbnail Image Tap Gesutre Recognizer Action Outlets
     
     var videoImageThumbnailTagBeingPickedFor: Int = 0
-    
-    @IBAction func onSelectVideo1TapGestureRecognizer(sender: UITapGestureRecognizer) {
-        self.videoImageThumbnailTagBeingPickedFor = self.video1ImageView.tag
-        self.browseForVideo()
-    }
-    
-    @IBAction func onSelectVideo2TapGestureRecognizer(sender: UITapGestureRecognizer) {
-        self.videoImageThumbnailTagBeingPickedFor = self.video2ImageView.tag
-        self.browseForVideo()
-    }
     
     func browseForVideo() {
         let picker = UIImagePickerController()
@@ -179,14 +186,10 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     // MARK: Program Functions
     
     func startOver() {
-        guard let selectAVideoImage = UIImage(named: "Select a Video") else { return }
-        
-        self.video1ImageView.image = selectAVideoImage
-        self.video2ImageView.image = selectAVideoImage
-        
+        self.videos.removeAll()
         self.videoPrepared = false
-        
         self.disableButtons()
+        self.tableView.reloadData()
     }
     
     func disableButtons() {
@@ -202,23 +205,15 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     }
     
     func onVideoSelected(path: NSURL) {
-        let image = thumbnailImageForVideo(path)
-        switch (self.videoImageThumbnailTagBeingPickedFor) {
-        case self.video1ImageView.tag:
-            self.video1ImageView.image = image
-            self.video1Path = path
-            break
-        case self.video2ImageView.tag:
-            self.video2ImageView.image = image
-            self.video2Path = path
-            break
-        default: break
-        }
+        let video = Video(url: path)
         
-        if (self.video1Path != nil &&
-            self.video2Path != nil) {
+        self.videos.append(video)
+        
+        if (self.videos.count > 1) {
             self.enableButtons()
         }
+        
+        self.tableView.reloadData()
     }
     
     var loadingIndicatorView: ProgressViewController?
@@ -238,51 +233,37 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     
     // MARK: AVFoundation Video Manipulation Code
     
-    func thumbnailImageForVideo(url:NSURL) -> UIImage? {
-        let asset = AVAsset(URL: url)
-        
-        var time = asset.duration
-        time.value = min(time.value, 2)
-        
-        let imageGenerator = AVAssetImageGenerator(asset: asset)
-        imageGenerator.appliesPreferredTrackTransform = true
-        do {
-            let imageRef = try imageGenerator.copyCGImageAtTime(time, actualTime: nil)
-            return UIImage(CGImage: imageRef)
-        } catch let error as NSError
-        {
-            print("MrgrViewController.getFrameFrom:: Error: \(error)")
-            return nil
-        }
-    }
-    
-    func prepend(video secondAsset: AVURLAsset, before firstAsset: AVURLAsset, andExportTo outputUrl: NSURL) -> Bool {
+    func append(assets: [Video], andExportTo outputUrl: NSURL) -> Bool {
         let mixComposition = AVMutableComposition()
         
         let videoTrack = mixComposition.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: kCMPersistentTrackID_Invalid)
         let audioTrack = mixComposition.addMutableTrackWithMediaType(AVMediaTypeAudio, preferredTrackID: kCMPersistentTrackID_Invalid)
         
-        let firstAssetTimeRange = CMTimeRangeMake(kCMTimeZero, firstAsset.duration)
-        let secondAssetTimeRange = CMTimeRangeMake(kCMTimeZero, secondAsset.duration)
-        
-        guard let firstMediaTrack = firstAsset.tracksWithMediaType(AVMediaTypeVideo).first else { return false }
-        let firstAudioTrack = firstAsset.tracksWithMediaType(AVMediaTypeAudio).first
-        
-        guard let secondMediaTrack = secondAsset.tracksWithMediaType(AVMediaTypeVideo).first else { return false }
-        let secondAudioTrack = secondAsset.tracksWithMediaType(AVMediaTypeAudio).first
-        
-        do {
-            try videoTrack.insertTimeRange(firstAssetTimeRange, ofTrack: firstMediaTrack, atTime: kCMTimeZero)
-            if let _ = firstAudioTrack {
-                try audioTrack.insertTimeRange(firstAssetTimeRange, ofTrack: firstAudioTrack!, atTime: kCMTimeZero)
+        // run through all the assets selected
+        // TODO: This ends up appending them in reverse order.
+        assets.forEach {(video) in
+            
+            let timeRange = CMTimeRangeMake(kCMTimeZero, video.duration)
+            
+            // add all video tracks in asset
+            let videoMediaTracks = video.asset.tracksWithMediaType(AVMediaTypeVideo)
+            videoMediaTracks.forEach{ (videoMediaTrack) in
+                do {
+                    try videoTrack.insertTimeRange(timeRange, ofTrack: videoMediaTrack, atTime: kCMTimeZero)
+                } catch _  {
+                    return
+                }
             }
-            try videoTrack.insertTimeRange(secondAssetTimeRange, ofTrack: secondMediaTrack, atTime: kCMTimeZero)
-            if let _ = secondAudioTrack {
-                try audioTrack.insertTimeRange(secondAssetTimeRange, ofTrack: secondAudioTrack!, atTime: kCMTimeZero)
+            
+            // add all audio tracks in asset
+            let audioMediaTracks = video.asset.tracksWithMediaType(AVMediaTypeAudio)
+            audioMediaTracks.forEach {(audioMediaTrack) in
+                do {
+                    try audioTrack.insertTimeRange(timeRange, ofTrack: audioMediaTrack, atTime: kCMTimeZero)
+                } catch _ {
+                    return
+                }
             }
-        } catch (let error) {
-            print(error)
-            return false
         }
         
         guard let exporter = AVAssetExportSession(asset: mixComposition, presetName: AVAssetExportPresetHighestQuality) else { return false }

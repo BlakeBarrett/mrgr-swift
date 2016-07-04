@@ -239,15 +239,21 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         let videoTrack = mixComposition.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: kCMPersistentTrackID_Invalid)
         let audioTrack = mixComposition.addMutableTrackWithMediaType(AVMediaTypeAudio, preferredTrackID: kCMPersistentTrackID_Invalid)
         
+//        var maxWidth: CGFloat = 0;
+//        var maxHeight: CGFloat = 0;
+//        
         // run through all the assets selected
-        // TODO: This ends up appending them in reverse order.
-        assets.forEach {(video) in
+        assets.reverse().forEach {(video) in
             
             let timeRange = CMTimeRangeMake(kCMTimeZero, video.duration)
             
             // add all video tracks in asset
             let videoMediaTracks = video.asset.tracksWithMediaType(AVMediaTypeVideo)
             videoMediaTracks.forEach{ (videoMediaTrack) in
+                
+//                maxWidth = max(videoMediaTrack.naturalSize.width, maxWidth)
+//                maxHeight = max(videoMediaTrack.naturalSize.height, maxHeight)
+                
                 do {
                     try videoTrack.insertTimeRange(timeRange, ofTrack: videoMediaTrack, atTime: kCMTimeZero)
                 } catch _  {

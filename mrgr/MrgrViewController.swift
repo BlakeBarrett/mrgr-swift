@@ -20,34 +20,41 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     
     var videos: [Video] = [Video]()
     
+    var previewing = false
+    var exporting = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tempVideoPath = getPathForTempFileNamed("temp.mov")
         
         NSNotificationCenter.defaultCenter().addObserverForName("videoExportDone", object: nil, queue: NSOperationQueue.mainQueue()) {message in
-            self.hideSpinner()
             if let url = message.object as? NSURL {
-                if (self.previewing) {
-                    let videoPreviewer = VideoPreviewerViewController(nibName: "VideoPreviewView", bundle: NSBundle.mainBundle())
-                    videoPreviewer.url = url
-                    self.presentViewController(videoPreviewer, animated: true, completion: nil)
-                }
-                if (self.actioning) {
-                    let activity = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-                    if (UIDevice.currentDevice().userInterfaceIdiom == .Pad) {
-                        let nav = UINavigationController(rootViewController: activity)
-                        nav.modalPresentationStyle = .Popover
-                        
-                        let popover = nav.popoverPresentationController as UIPopoverPresentationController!
-                        popover.barButtonItem = self.actionBarButtonView
-                        
-                        self.presentViewController(nav, animated: true, completion: nil)
-                    } else {
-                        self.presentViewController(activity, animated: true, completion: nil)
+                self.hideSpinner(){
+                    if (self.previewing) {
+                        self.previewVideoAt(url)
                     }
+                    if (self.exporting) {
+                        let activity = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+                        if (UIDevice.currentDevice().userInterfaceIdiom == .Pad) {
+                            let nav = UINavigationController(rootViewController: activity)
+                            nav.modalPresentationStyle = .Popover
+                            
+                            let popover = nav.popoverPresentationController as UIPopoverPresentationController!
+                            popover.barButtonItem = self.actionBarButtonView
+                            
+                            self.presentViewController(nav, animated: true, completion: nil)
+                        } else {
+                            self.presentViewController(activity, animated: true, completion: nil)
+                        }
+                    }
+                    self.exporting = false
+                    self.previewing = false
                 }
-                self.actioning = false
-                self.previewing = false
+            } else {
+                self.hideSpinner(){
+                    guard let _ = self.tempVideoPath else { return }
+                    self.previewVideoAt(self.tempVideoPath!)
+                }
             }
         }
         
@@ -98,23 +105,18 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             NSNotificationCenter.defaultCenter().postNotificationName("videoExportDone", object: self.tempVideoPath)
             return true
         }
-        
         self.showSpinner()
-        
         self.videoPrepared = self.append(self.videos, andExportTo: tempVideoPath!)
-        
         return self.videoPrepared
     }
     
-    var previewing = false
     @IBAction func onPlayClicked(sender: UIBarButtonItem) {
         self.previewing = true
         self.prepareVideo()
     }
     
-    var actioning = false
     @IBAction func onActionSelected(sender: UIBarButtonItem) {
-        self.actioning = true
+        self.exporting = true
         self.prepareVideo()
     }
     
@@ -246,17 +248,26 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     
     var loadingIndicatorView: ProgressViewController?
     func showSpinner() {
-        //LoadingIndicatorView
-        self.loadingIndicatorView = ProgressViewController(nibName: "ProgressIndicatorView", bundle: NSBundle.mainBundle())
-        loadingIndicatorView!.modalPresentationStyle = .OverCurrentContext
-        self.presentViewController(loadingIndicatorView!, animated: true, completion: nil)
+        dispatch_async(dispatch_get_main_queue(),{
+            //LoadingIndicatorView
+            self.loadingIndicatorView = ProgressViewController(nibName: "ProgressIndicatorView", bundle: NSBundle.mainBundle())
+            self.loadingIndicatorView!.modalPresentationStyle = .OverCurrentContext
+            self.presentViewController(self.loadingIndicatorView!, animated: true, completion: nil)
+        })
     }
     
-    func hideSpinner() {
-        guard let loadingIndicatorView = self.loadingIndicatorView else { return }
-        loadingIndicatorView.dismissViewControllerAnimated(true, completion: {
-            
-        })
+    func hideSpinner(completion: (() -> Void)?) {
+        guard let loadingIndicatorView = self.loadingIndicatorView else {
+            completion?()
+            return
+        }
+        loadingIndicatorView.dismissViewControllerAnimated(true, completion: completion)
+    }
+    
+    func previewVideoAt(url: NSURL) {
+        let videoPreviewer = VideoPreviewerViewController(nibName: "VideoPreviewView", bundle: NSBundle.mainBundle())
+        videoPreviewer.url = url
+        self.presentViewController(videoPreviewer, animated: true, completion: nil)
     }
     
     // MARK: AVFoundation Video Manipulation Code

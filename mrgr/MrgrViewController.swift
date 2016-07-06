@@ -257,11 +257,15 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     }
     
     func hideSpinner(completion: (() -> Void)?) {
-        guard let loadingIndicatorView = self.loadingIndicatorView else {
+        let completionAndCleanup: () -> Void = {
             completion?()
+            self.loadingIndicatorView = nil
+        }
+        guard let loadingIndicatorView = self.loadingIndicatorView else {
+            completionAndCleanup()
             return
         }
-        loadingIndicatorView.dismissViewControllerAnimated(true, completion: completion)
+        loadingIndicatorView.dismissViewControllerAnimated(true, completion: completionAndCleanup)
     }
     
     func previewVideoAt(url: NSURL) {

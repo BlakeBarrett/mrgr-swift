@@ -116,8 +116,8 @@
                                             <rect key="frame" x="0.0" y="0.0" width="560" height="180"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Bhm-2m-L3y">
-                                                    <rect key="frame" x="0.0" y="0.0" width="560" height="560"/>
+                                                <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Bhm-2m-L3y">
+                                                    <rect key="frame" x="198" y="8" width="165" height="165"/>
                                                     <accessibility key="accessibilityConfiguration">
                                                         <accessibilityTraits key="traits" button="YES" image="YES"/>
                                                     </accessibility>
@@ -131,19 +131,7 @@
                                                 </button>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="trailing" secondItem="Bhm-2m-L3y" secondAttribute="trailing" id="0RA-Yb-oBi">
-                                                    <variation key="widthClass=compact" constant="97"/>
-                                                </constraint>
                                                 <constraint firstItem="Bhm-2m-L3y" firstAttribute="centerY" secondItem="evf-eP-LXA" secondAttribute="centerY" id="M7u-Oi-s7e"/>
-                                                <constraint firstItem="Bhm-2m-L3y" firstAttribute="leading" secondItem="evf-eP-LXA" secondAttribute="leading" id="WnC-dS-7XX">
-                                                    <variation key="widthClass=compact" constant="98"/>
-                                                </constraint>
-                                                <constraint firstItem="Bhm-2m-L3y" firstAttribute="top" secondItem="evf-eP-LXA" secondAttribute="top" id="adS-gI-hwD">
-                                                    <variation key="widthClass=compact" constant="7"/>
-                                                </constraint>
-                                                <constraint firstAttribute="bottom" secondItem="Bhm-2m-L3y" secondAttribute="bottom" id="wyY-cj-mdl">
-                                                    <variation key="widthClass=compact" constant="8"/>
-                                                </constraint>
                                                 <constraint firstItem="Bhm-2m-L3y" firstAttribute="centerX" secondItem="evf-eP-LXA" secondAttribute="centerX" id="yqN-jb-LCv"/>
                                             </constraints>
                                         </tableViewCellContentView>

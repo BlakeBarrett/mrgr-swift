@@ -139,6 +139,34 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         }
     }
     
+    func thumbnailAt(indexPath: NSIndexPath) -> UIImage? {
+        if (indexPath.row < videos.count) {
+            return videos[indexPath.row].thumbnail
+        } else {
+            return UIImage(named: "Select a Video")
+        }
+    }
+    
+    // variable row height
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return cellHeightFor(tableView, image: thumbnailAt(indexPath))
+    }
+    
+    func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return cellHeightFor(tableView, image: thumbnailAt(indexPath))
+    }
+    
+    func cellHeightFor(tableView: UITableView, image: UIImage?) -> CGFloat {
+        let tableWidth: CGFloat = tableView.frame.width
+        
+        let size = image?.size
+        let width = size?.width
+        let height = size?.height
+        let aspectRatio = (width! / height!)
+        
+        return min((tableWidth / aspectRatio), (self.view.bounds.height / 2))
+    }
+    
     // MARK: Video Thumbnail Image Tap Gesutre Recognizer Action Outlets
     
     var videoImageThumbnailTagBeingPickedFor: Int = 0

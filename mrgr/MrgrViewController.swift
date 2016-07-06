@@ -18,7 +18,7 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     
     @IBOutlet weak var tableView: UITableView!
     
-    var videos: [Video] = [Video]()
+    var videos = [Video]()
     
     var previewing = false
     var exporting = false

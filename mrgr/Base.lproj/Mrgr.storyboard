@@ -25,25 +25,28 @@
                                     <constraint firstAttribute="height" constant="44" id="Q8u-hg-cW2"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="36"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="textColor" red="0.1803921568627451" green="0.5490196078431373" blue="0.98039215686274506" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="X9w-jd-qh8">
                                 <rect key="frame" x="0.0" y="556" width="600" height="44"/>
                                 <items>
                                     <barButtonItem enabled="NO" systemItem="action" id="jIL-Tf-yrz">
+                                        <color key="tintColor" red="0.18039215689999999" green="0.54901960780000003" blue="0.98039215690000003" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
                                             <action selector="onActionSelected:" destination="BYZ-38-t0r" id="Yzi-1r-zcO"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem systemItem="flexibleSpace" id="kdQ-dU-Kak"/>
                                     <barButtonItem enabled="NO" systemItem="play" id="JJK-7u-Kb2">
+                                        <color key="tintColor" red="0.18039215689999999" green="0.54901960780000003" blue="0.98039215690000003" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
                                             <action selector="onPlayClicked:" destination="BYZ-38-t0r" id="B84-m1-Uec"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem systemItem="flexibleSpace" id="vHZ-s6-kZq"/>
                                     <barButtonItem enabled="NO" systemItem="trash" id="tA2-vW-mtj">
+                                        <color key="tintColor" red="0.18039215689999999" green="0.54901960780000003" blue="0.98039215690000003" alpha="1" colorSpace="calibratedRGB"/>
                                         <connections>
                                             <action selector="onTrashClicked:" destination="BYZ-38-t0r" id="Wta-Mv-aB2"/>
                                         </connections>

@@ -18,7 +18,23 @@ class TableViewCell: UITableViewCell {
     func setVideo(item:Video) {
         self.item = item
         self.thumbnailImageView.image = item.thumbnail
-        self.durationLabelView.text = "\(round(item.duration.seconds))"
+        
+        let durationString = TableViewCell.parseDuration(Int(round(item.duration.seconds)))
+        self.durationLabelView.text = durationString
     }
     
+    class func parseDuration(value: Int) -> String {
+        let hours = (value / 3600)
+        let minutes = ((value % 3600) / 60)
+        let seconds = (value % 60)
+        
+        var durationString = "\(seconds)"
+        if minutes > 0 {
+            durationString = "\(minutes):" + durationString
+        }
+        if hours > 0 {
+            durationString = "\(hours):" + durationString
+        }
+        return durationString
+    }
 }

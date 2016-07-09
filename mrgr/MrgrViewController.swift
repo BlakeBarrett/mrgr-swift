@@ -87,6 +87,7 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         
         let destroyAction = UIAlertAction(title: "Reset", style: .Destructive) { (action) in
             self.startOver()
+            self.removeTempFileAtPath("temp.mov")
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in

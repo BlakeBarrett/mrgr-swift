@@ -94,14 +94,45 @@
                                                     </view>
                                                     <blurEffect style="light"/>
                                                 </visualEffectView>
+                                                <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OLm-jR-M3x">
+                                                    <rect key="frame" x="243" y="120" width="75" height="75"/>
+                                                    <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="lMQ-Z3-Pxx">
+                                                        <rect key="frame" x="0.0" y="0.0" width="75" height="75"/>
+                                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                        <subviews>
+                                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RCX-Jn-Wxf">
+                                                                <rect key="frame" x="0.0" y="0.0" width="75" height="75"/>
+                                                                <connections>
+                                                                    <action selector="onPlayButtonClick:" destination="iK9-kD-gHt" eventType="touchUpInside" id="Cra-SU-tGe"/>
+                                                                </connections>
+                                                            </button>
+                                                        </subviews>
+                                                        <accessibility key="accessibilityConfiguration">
+                                                            <accessibilityTraits key="traits" button="YES"/>
+                                                        </accessibility>
+                                                        <constraints>
+                                                            <constraint firstItem="RCX-Jn-Wxf" firstAttribute="leading" secondItem="lMQ-Z3-Pxx" secondAttribute="leading" id="ASp-iQ-k6k"/>
+                                                            <constraint firstAttribute="trailing" secondItem="RCX-Jn-Wxf" secondAttribute="trailing" id="PwU-Ro-beF"/>
+                                                            <constraint firstAttribute="bottom" secondItem="RCX-Jn-Wxf" secondAttribute="bottom" id="hMO-zz-Iud"/>
+                                                            <constraint firstItem="RCX-Jn-Wxf" firstAttribute="top" secondItem="lMQ-Z3-Pxx" secondAttribute="top" id="hgO-27-uMP"/>
+                                                        </constraints>
+                                                    </view>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="75" id="14c-L1-RaS"/>
+                                                        <constraint firstAttribute="width" secondItem="OLm-jR-M3x" secondAttribute="height" multiplier="1:1" id="2Bp-3s-7Ai"/>
+                                                    </constraints>
+                                                    <blurEffect style="light"/>
+                                                </visualEffectView>
                                             </subviews>
                                             <constraints>
+                                                <constraint firstItem="OLm-jR-M3x" firstAttribute="centerY" secondItem="ct5-Ey-pMu" secondAttribute="centerY" id="0p1-gG-1IJ"/>
                                                 <constraint firstItem="ct5-Ey-pMu" firstAttribute="centerX" secondItem="NZr-Yl-gig" secondAttribute="centerX" id="2fu-be-mg7"/>
                                                 <constraint firstItem="ct5-Ey-pMu" firstAttribute="top" secondItem="NZr-Yl-gig" secondAttribute="top" id="4HT-gi-58f"/>
                                                 <constraint firstItem="ct5-Ey-pMu" firstAttribute="leading" secondItem="NZr-Yl-gig" secondAttribute="leading" id="4bQ-Zo-Ug5"/>
                                                 <constraint firstItem="ct5-Ey-pMu" firstAttribute="centerY" secondItem="NZr-Yl-gig" secondAttribute="centerY" id="9IW-id-USW"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="CnL-Q3-8pd" secondAttribute="trailing" constant="-8" id="EGL-f4-wWT"/>
                                                 <constraint firstAttribute="trailing" secondItem="ct5-Ey-pMu" secondAttribute="trailing" id="hGg-qp-vyI"/>
+                                                <constraint firstItem="OLm-jR-M3x" firstAttribute="centerX" secondItem="ct5-Ey-pMu" secondAttribute="centerX" id="lEs-tQ-4Dx"/>
                                                 <constraint firstAttribute="bottomMargin" secondItem="CnL-Q3-8pd" secondAttribute="bottom" constant="-8" id="wB3-lc-Vhj"/>
                                                 <constraint firstAttribute="bottom" secondItem="ct5-Ey-pMu" secondAttribute="bottom" id="yNi-zN-cAP"/>
                                                 <constraint firstItem="CnL-Q3-8pd" firstAttribute="leading" secondItem="NZr-Yl-gig" secondAttribute="leadingMargin" constant="-8" id="zvg-73-g74"/>
@@ -109,6 +140,7 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="durationLabelView" destination="yLa-fC-f4E" id="ut6-Sq-1YG"/>
+                                            <outlet property="playView" destination="OLm-jR-M3x" id="JCO-ta-pS9"/>
                                             <outlet property="thumbnailImageView" destination="ct5-Ey-pMu" id="GyI-oU-D4R"/>
                                         </connections>
                                     </tableViewCell>

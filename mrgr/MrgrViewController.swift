@@ -61,6 +61,11 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         NSNotificationCenter.defaultCenter().addObserverForName("addVideoClicked", object: nil, queue: NSOperationQueue.mainQueue()) { item in
             self.browseForVideo()
         }
+        
+        NSNotificationCenter.defaultCenter().addObserverForName("previewClicked", object: nil, queue: NSOperationQueue.mainQueue()) { item in
+            guard let video = item.object as? Video else { return }
+            self.previewVideoAt(video.videoUrl)
+        }
     }
     
     override func didReceiveMemoryWarning() {

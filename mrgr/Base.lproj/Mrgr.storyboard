@@ -55,15 +55,15 @@
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 <color key="barTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </toolbar>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="249" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="400" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="FoX-af-gmT">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="249" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" allowsSelectionDuringEditing="YES" rowHeight="360" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="FoX-af-gmT">
                                 <rect key="frame" x="20" y="72" width="560" height="483"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" showsReorderControl="YES" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="mrgrCellReuseIdentifier" rowHeight="400" id="iK9-kD-gHt" customClass="TableViewCell" customModule="mrgr" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="560" height="400"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" showsReorderControl="YES" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="mrgrCellReuseIdentifier" rowHeight="360" id="iK9-kD-gHt" customClass="TableViewCell" customModule="mrgr" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="560" height="360"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="iK9-kD-gHt" id="NZr-Yl-gig">
-                                            <rect key="frame" x="0.0" y="0.0" width="560" height="399"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="560" height="359"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ct5-Ey-pMu">
@@ -72,10 +72,10 @@
                                                         <constraint firstAttribute="width" secondItem="ct5-Ey-pMu" secondAttribute="height" multiplier="16:9" id="EKc-xf-hvy"/>
                                                     </constraints>
                                                 </imageView>
-                                                <visualEffectView opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CnL-Q3-8pd">
-                                                    <rect key="frame" x="0.0" y="278" width="560" height="37"/>
+                                                <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CnL-Q3-8pd">
+                                                    <rect key="frame" x="0.0" y="282" width="560" height="33"/>
                                                     <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="zU8-n9-IrQ">
-                                                        <rect key="frame" x="0.0" y="0.0" width="560" height="37"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="560" height="33"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yLa-fC-f4E">
@@ -131,9 +131,9 @@
                                                 <constraint firstItem="ct5-Ey-pMu" firstAttribute="leading" secondItem="NZr-Yl-gig" secondAttribute="leading" id="4bQ-Zo-Ug5"/>
                                                 <constraint firstItem="ct5-Ey-pMu" firstAttribute="centerY" secondItem="NZr-Yl-gig" secondAttribute="centerY" id="9IW-id-USW"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="CnL-Q3-8pd" secondAttribute="trailing" constant="-8" id="EGL-f4-wWT"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="CnL-Q3-8pd" secondAttribute="bottom" constant="-8" id="UXL-Cp-wTm"/>
                                                 <constraint firstAttribute="trailing" secondItem="ct5-Ey-pMu" secondAttribute="trailing" id="hGg-qp-vyI"/>
                                                 <constraint firstItem="OLm-jR-M3x" firstAttribute="centerX" secondItem="ct5-Ey-pMu" secondAttribute="centerX" id="lEs-tQ-4Dx"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="CnL-Q3-8pd" secondAttribute="bottom" constant="-8" id="wB3-lc-Vhj"/>
                                                 <constraint firstAttribute="bottom" secondItem="ct5-Ey-pMu" secondAttribute="bottom" id="yNi-zN-cAP"/>
                                                 <constraint firstItem="CnL-Q3-8pd" firstAttribute="leading" secondItem="NZr-Yl-gig" secondAttribute="leadingMargin" constant="-8" id="zvg-73-g74"/>
                                             </constraints>
@@ -145,7 +145,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" showsReorderControl="YES" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="emptyTableViewCellReuseIdentifier" rowHeight="181" id="x7E-TU-01D" customClass="EmptyTableViewCell" customModule="mrgr" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="428" width="560" height="181"/>
+                                        <rect key="frame" x="0.0" y="388" width="560" height="181"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="x7E-TU-01D" id="evf-eP-LXA">
                                             <rect key="frame" x="0.0" y="0.0" width="560" height="180"/>

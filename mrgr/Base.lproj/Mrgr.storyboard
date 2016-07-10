@@ -184,16 +184,30 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="X9w-jd-qh8" secondAttribute="trailing" id="1AM-oP-i3x"/>
-                            <constraint firstItem="FoX-af-gmT" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="AJN-vr-knn"/>
                             <constraint firstItem="TyI-mK-Ylx" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="FZY-JE-hoL"/>
                             <constraint firstItem="TyI-mK-Ylx" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="LYG-Bh-lWX"/>
                             <constraint firstItem="FoX-af-gmT" firstAttribute="top" secondItem="TyI-mK-Ylx" secondAttribute="bottom" constant="8" id="OVE-wD-TZy"/>
+                            <constraint firstItem="FoX-af-gmT" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="SWo-dD-K7D"/>
                             <constraint firstItem="X9w-jd-qh8" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="TuS-kR-KhO"/>
+                            <constraint firstItem="FoX-af-gmT" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="dd4-yG-wjY"/>
                             <constraint firstItem="X9w-jd-qh8" firstAttribute="top" secondItem="FoX-af-gmT" secondAttribute="bottom" constant="1" id="dlS-zT-GZa"/>
-                            <constraint firstItem="FoX-af-gmT" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="e3U-vb-hdl"/>
                             <constraint firstItem="TyI-mK-Ylx" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailingMargin" id="lhK-Ct-xaM"/>
+                            <constraint firstAttribute="trailing" secondItem="FoX-af-gmT" secondAttribute="trailing" id="lyb-zL-4Pj"/>
+                            <constraint firstItem="FoX-af-gmT" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="s8R-dx-qrI"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="X9w-jd-qh8" secondAttribute="bottom" id="ynC-yG-Ia7"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="SWo-dD-K7D"/>
+                                <exclude reference="lyb-zL-4Pj"/>
+                            </mask>
+                        </variation>
+                        <variation key="heightClass=regular-widthClass=compact">
+                            <mask key="constraints">
+                                <include reference="SWo-dD-K7D"/>
+                                <include reference="lyb-zL-4Pj"/>
+                            </mask>
+                        </variation>
                     </view>
                     <connections>
                         <outlet property="actionBarButtonView" destination="jIL-Tf-yrz" id="aw9-io-Ns8"/>

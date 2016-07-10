@@ -169,15 +169,20 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         
-        let video = self.videos[indexPath.row]
+        let row = indexPath.row
+        if !(row < self.videos.count) {
+            return
+        }
+        tableView.endUpdates()
         
+        let video = self.videos[row]
         switch (editingStyle) {
         case UITableViewCellEditingStyle.Insert:
             self.videos.removeAtIndex(indexPath.row)
-            self.videos.insert(video, atIndex: indexPath.row)
+            self.videos.insert(video, atIndex: row)
             break
         case UITableViewCellEditingStyle.Delete:
-            self.videos.removeAtIndex(indexPath.row)
+            self.videos.removeAtIndex(row)
             tableView.reloadData()
             break
         default: break

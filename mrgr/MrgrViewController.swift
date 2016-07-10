@@ -10,7 +10,7 @@ import UIKit
 import MobileCoreServices
 import AVFoundation
 
-class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate {
+class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate, UIVideoEditorControllerDelegate {
 
     @IBOutlet weak var trashBarButtonView: UIBarButtonItem!
     @IBOutlet weak var playBarButtonView: UIBarButtonItem!
@@ -80,6 +80,7 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         return UIInterfaceOrientationMask.Portrait
     }
 
+    // MARK:
     // MARK: Bar Button Item Action Outlets
     
     @IBAction func onTrashClicked(sender: UIBarButtonItem) {
@@ -126,7 +127,9 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         self.prepareVideo()
     }
     
+    // MARK:
     // MARK: UITableViewDataSource methods
+    
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.videos.count + 1
     }
@@ -136,15 +139,53 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        if (indexPath.row == videos.count) {
+        if (indexPath.row == self.videos.count) {
             let cell = tableView.dequeueReusableCellWithIdentifier("emptyTableViewCellReuseIdentifier", forIndexPath: indexPath)
             return cell
         } else {
-            let item = videos[indexPath.row]
+            let item = self.videos[indexPath.row]
             let cell = tableView.dequeueReusableCellWithIdentifier("mrgrCellReuseIdentifier", forIndexPath: indexPath) as! TableViewCell
             cell.setVideo(item)
             return cell
         }
+    }
+    
+    func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return indexPath.row < self.videos.count
+    }
+    
+    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return indexPath.row < self.videos.count
+    }
+    
+    func tableView(tableView: UITableView, willBeginEditingRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.setEditing(true, animated: true)
+        tableView.beginUpdates()
+    }
+    
+    func tableView(tableView: UITableView, didEndEditingRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.endUpdates()
+    }
+    
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        
+        let video = self.videos[indexPath.row]
+        
+        switch (editingStyle) {
+        case UITableViewCellEditingStyle.Insert:
+            self.videos.removeAtIndex(indexPath.row)
+            self.videos.insert(video, atIndex: indexPath.row)
+            break
+        case UITableViewCellEditingStyle.Delete:
+            self.videos.removeAtIndex(indexPath.row)
+            tableView.reloadData()
+            break
+        default: break
+        }
+    }
+    
+    func tableView(tableView: UITableView, shouldShowMenuForRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return indexPath.row < self.videos.count
     }
     
     func thumbnailAt(indexPath: NSIndexPath) -> UIImage? {
@@ -175,6 +216,7 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         return min((tableWidth / aspectRatio), (self.view.bounds.height / 2))
     }
     
+    // MARK:
     // MARK: Video Thumbnail Image Tap Gesutre Recognizer Action Outlets
     
     var videoImageThumbnailTagBeingPickedFor: Int = 0
@@ -187,6 +229,22 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         picker.allowsEditing = true
         self.presentViewController(picker, animated: true) { () -> Void in
             // no-op
+        }
+    }
+    
+    // MARK: UIVideoEditorController
+    
+    func openEditorFor(video: Video) {
+        
+        guard let path = video.videoUrl.path else { return }
+        
+        let editor = UIVideoEditorController()
+        editor.delegate = self
+        if UIVideoEditorController.canEditVideoAtPath(path) {
+            editor.videoPath = path
+            self.presentViewController(editor, animated: true) {
+                
+            }
         }
     }
     

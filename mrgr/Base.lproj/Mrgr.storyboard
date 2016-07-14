@@ -220,49 +220,6 @@
             </objects>
             <point key="canvasLocation" x="300" y="389"/>
         </scene>
-        <!--About Screen View Controller-->
-        <scene sceneID="S4T-Kk-dEr">
-            <objects>
-                <viewController storyboardIdentifier="aboutPage" id="O9d-3o-iaT" customClass="AboutScreenViewController" customModule="mrgr" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="9be-vM-8qH"/>
-                        <viewControllerLayoutGuide type="bottom" id="rD6-0Q-skT"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="fH5-BL-XSE">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <webView multipleTouchEnabled="YES" contentMode="scaleToFill" mediaPlaybackRequiresUserAction="NO" mediaPlaybackAllowsAirPlay="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y6G-a6-ial">
-                                <rect key="frame" x="0.0" y="58" width="600" height="542"/>
-                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="deviceRGB"/>
-                                <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" link="YES"/>
-                            </webView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b1j-eA-APP">
-                                <rect key="frame" x="20" y="28" width="37" height="30"/>
-                                <state key="normal" title="Done"/>
-                                <connections>
-                                    <action selector="onDoneClicked:" destination="O9d-3o-iaT" eventType="touchUpInside" id="kzI-bv-txi"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="y6G-a6-ial" firstAttribute="top" secondItem="b1j-eA-APP" secondAttribute="bottom" id="FAO-vH-aOQ"/>
-                            <constraint firstItem="b1j-eA-APP" firstAttribute="top" secondItem="9be-vM-8qH" secondAttribute="bottom" constant="8" id="ImF-mL-Ai4"/>
-                            <constraint firstItem="rD6-0Q-skT" firstAttribute="top" secondItem="y6G-a6-ial" secondAttribute="bottom" id="fnh-tR-zBM"/>
-                            <constraint firstItem="y6G-a6-ial" firstAttribute="leading" secondItem="fH5-BL-XSE" secondAttribute="leadingMargin" constant="-20" id="hSD-sL-pP1"/>
-                            <constraint firstItem="b1j-eA-APP" firstAttribute="leading" secondItem="fH5-BL-XSE" secondAttribute="leadingMargin" id="pxw-OS-7JL"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="y6G-a6-ial" secondAttribute="trailing" constant="-20" id="rTw-Xy-wbC"/>
-                        </constraints>
-                    </view>
-                    <connections>
-                        <outlet property="webView" destination="y6G-a6-ial" id="goa-1r-3W1"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="HAg-yu-WJC" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1060" y="372"/>
-        </scene>
     </scenes>
     <resources>
         <image name="circle-plus" width="165" height="165"/>

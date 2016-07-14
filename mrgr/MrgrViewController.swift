@@ -123,8 +123,32 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     }
     
     @IBAction func onActionSelected(sender: UIBarButtonItem) {
-        self.exporting = true
-        self.prepareVideo()
+        
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        
+        let shareAction = UIAlertAction(title: "Share", style: .Default) { (action) in
+            self.exporting = true
+            self.prepareVideo()
+        }
+        
+        let aboutAction = UIAlertAction(title: "About", style: .Default) { (action) in
+            self.showAboutPage()
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
+            alertController.dismissViewControllerAnimated(true, completion: nil)
+        }
+        
+        alertController.addAction(shareAction)
+        alertController.addAction(aboutAction)
+        alertController.addAction(cancelAction)
+        
+        alertController.popoverPresentationController?.barButtonItem = sender
+        
+        self.presentViewController(alertController, animated: true) {
+            // ...
+        }
+        
     }
     
     // MARK:
@@ -294,7 +318,7 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     func disableButtons() {
         self.trashBarButtonView.enabled = false
         self.playBarButtonView.enabled = false
-        self.actionBarButtonView.enabled = false
+//        self.actionBarButtonView.enabled = false
     }
     
     func enableButtons() {
@@ -442,5 +466,12 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         }
     }
     
+    // MARK:
+    // MARK: About Page
+    func showAboutPage() {
+        let location = "http://mskr.co/private/147372542885/tumblr_oaa9yaYtLh1ts3t7o"
+        guard let url = NSURL(string:location) else { return }
+        UIApplication.sharedApplication().openURL(url)
+    }
 }
 

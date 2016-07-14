@@ -38,7 +38,7 @@
                     <rect key="frame" x="282" y="282" width="37" height="37"/>
                 </activityIndicatorView>
             </subviews>
-            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="4lQ-Eq-0GV" firstAttribute="leading" secondItem="xdz-NE-bT2" secondAttribute="leading" id="51D-aG-DXd"/>
                 <constraint firstAttribute="trailing" secondItem="4lQ-Eq-0GV" secondAttribute="trailing" id="7nD-IT-PRE"/>

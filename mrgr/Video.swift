@@ -18,6 +18,7 @@ class Video {
         }
     }
     var thumbnail: UIImage
+    var muted = false
     
     init(url:NSURL) {
         self.videoUrl = url

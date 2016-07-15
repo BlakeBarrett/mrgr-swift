@@ -9,8 +9,9 @@
 import UIKit
 import MobileCoreServices
 import AVFoundation
+import MediaPlayer
 
-class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate, UIVideoEditorControllerDelegate {
+class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITableViewDataSource, UITableViewDelegate, UIVideoEditorControllerDelegate, MPMediaPickerControllerDelegate {
 
     @IBOutlet weak var trashBarButtonView: UIBarButtonItem!
     @IBOutlet weak var playBarButtonView: UIBarButtonItem!
@@ -19,6 +20,7 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     @IBOutlet weak var tableView: UITableView!
     
     var videos = [Video]()
+    var audioTrack: MPMediaItem?
     
     var previewing = false
     var exporting = false
@@ -113,7 +115,7 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             return true
         }
         self.showSpinner()
-        self.videoPrepared = self.append(self.videos, andExportTo: tempVideoPath!)
+        self.videoPrepared = self.append(self.videos, andExportTo: tempVideoPath!, with: self.audioTrack)
         return self.videoPrepared
     }
     
@@ -261,6 +263,27 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         }
     }
     
+    func browseForAudio() {
+        let pickerController = MPMediaPickerController()
+        pickerController.delegate = self
+        pickerController.allowsPickingMultipleItems = false
+        self.presentViewController(pickerController, animated: true, completion: nil)
+    }
+    
+    // MARK: MPMediaPickerControllerDelegate
+    func mediaPicker(mediaPicker: MPMediaPickerController, didPickMediaItems mediaItemCollection: MPMediaItemCollection){
+        self.audioTrack = mediaItemCollection.items.first
+        self.dismiss(mediaPicker)
+    }
+    
+    func mediaPickerDidCancel(mediaPicker: MPMediaPickerController) {
+        self.dismiss(mediaPicker)
+    }
+    
+    func dismiss(mediaPicker: MPMediaPickerController) {
+        mediaPicker.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
     // MARK: UIVideoEditorController
     
     func openEditorFor(video: Video) {
@@ -369,7 +392,7 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     
     // MARK: AVFoundation Video Manipulation Code
     
-    func append(assets: [Video], andExportTo outputUrl: NSURL) -> Bool {
+    func append(assets: [Video], andExportTo outputUrl: NSURL, with backgroundAudio: MPMediaItem?) -> Bool {
         let mixComposition = AVMutableComposition()
         
         let videoTrack = mixComposition.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: kCMPersistentTrackID_Invalid)
@@ -397,6 +420,10 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
                 }
             }
             
+            if video.muted {
+                return
+            }
+            
             // add all audio tracks in asset
             let audioMediaTracks = video.asset.tracksWithMediaType(AVMediaTypeAudio)
             audioMediaTracks.forEach {(audioMediaTrack) in
@@ -407,6 +434,12 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
                 }
             }
         }
+        
+        // TODO: check this shit out for video rotation.
+        // http://stackoverflow.com/questions/12136841/avmutablevideocomposition-rotated-video-captured-in-portrait-mode
+        // http://stackoverflow.com/questions/27627610/video-not-rotating-using-avmutablevideocompositionlayerinstruction
+        // And where would we be w/o Ray Wenderlich?
+        // https://www.raywenderlich.com/13418/how-to-play-record-edit-videos-in-ios
         
         guard let exporter = AVAssetExportSession(asset: mixComposition, presetName: AVAssetExportPresetHighestQuality) else { return false }
         exporter.outputURL = outputUrl

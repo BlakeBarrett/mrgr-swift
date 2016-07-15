@@ -37,6 +37,9 @@ class TableViewCell: UITableViewCell {
         let seconds = (value % 60)
         
         var durationString = "\(seconds)"
+        if (seconds < 10) {
+            durationString = "0\(seconds)"
+        }
         if minutes > 0 {
             durationString = "\(minutes):" + durationString
         }

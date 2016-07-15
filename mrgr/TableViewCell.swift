@@ -36,12 +36,14 @@ class TableViewCell: UITableViewCell {
         let minutes = ((value % 3600) / 60)
         let seconds = (value % 60)
         
-        var durationString = "\(seconds)"
+        var durationString: String
         if (seconds < 10) {
-            durationString = "0\(seconds)"
+            durationString = ":0\(seconds)"
+        } else {
+            durationString = ":\(seconds)"
         }
         if minutes > 0 {
-            durationString = "\(minutes):" + durationString
+            durationString = "\(minutes)" + durationString
         }
         if hours > 0 {
             durationString = "\(hours):" + durationString

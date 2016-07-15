@@ -33,7 +33,7 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             if let url = message.object as? NSURL {
                 self.hideSpinner(){
                     if (self.previewing) {
-                        self.previewVideoAt(url)
+                        self.previewVideoAt(url, animated: true)
                     }
                     if (self.exporting) {
                         let activity = UIActivityViewController(activityItems: [url], applicationActivities: nil)
@@ -55,7 +55,7 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             } else {
                 self.hideSpinner(){
                     guard let _ = self.tempVideoPath else { return }
-                    self.previewVideoAt(self.tempVideoPath!)
+                    self.previewVideoAt(self.tempVideoPath!, animated: false)
                 }
             }
         }
@@ -66,7 +66,7 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         
         NSNotificationCenter.defaultCenter().addObserverForName("previewClicked", object: nil, queue: NSOperationQueue.mainQueue()) { item in
             guard let video = item.object as? Video else { return }
-            self.previewVideoAt(video.videoUrl)
+            self.previewVideoAt(video.videoUrl, animated: true)
         }
     }
     
@@ -141,7 +141,9 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             alertController.dismissViewControllerAnimated(true, completion: nil)
         }
         
-        alertController.addAction(shareAction)
+        if videos.count > 0 {
+            alertController.addAction(shareAction)
+        }
         alertController.addAction(aboutAction)
         alertController.addAction(cancelAction)
         
@@ -381,13 +383,13 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             completionAndCleanup()
             return
         }
-        loadingIndicatorView.dismissViewControllerAnimated(true, completion: completionAndCleanup)
+        loadingIndicatorView.dismissViewControllerAnimated(false, completion: completionAndCleanup)
     }
     
-    func previewVideoAt(url: NSURL) {
+    func previewVideoAt(url: NSURL, animated: Bool) {
         let videoPreviewer = VideoPreviewerViewController(nibName: "VideoPreviewView", bundle: NSBundle.mainBundle())
         videoPreviewer.url = url
-        self.presentViewController(videoPreviewer, animated: true, completion: nil)
+        self.presentViewController(videoPreviewer, animated: animated, completion: nil)
     }
     
     // MARK: AVFoundation Video Manipulation Code

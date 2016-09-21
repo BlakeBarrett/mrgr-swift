@@ -29,24 +29,24 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         super.viewDidLoad()
         self.tempVideoPath = getPathForTempFileNamed("temp.mov")
         
-        NSNotificationCenter.defaultCenter().addObserverForName("videoExportDone", object: nil, queue: NSOperationQueue.mainQueue()) {message in
-            if let url = message.object as? NSURL {
+        NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "videoExportDone"), object: nil, queue: OperationQueue.main) {message in
+            if let url = message.object as? URL {
                 self.hideSpinner(){
                     if (self.previewing) {
                         self.previewVideoAt(url, animated: true)
                     }
                     if (self.exporting) {
                         let activity = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-                        if (UIDevice.currentDevice().userInterfaceIdiom == .Pad) {
+                        if (UIDevice.current.userInterfaceIdiom == .pad) {
                             let nav = UINavigationController(rootViewController: activity)
-                            nav.modalPresentationStyle = .Popover
+                            nav.modalPresentationStyle = .popover
                             
                             let popover = nav.popoverPresentationController as UIPopoverPresentationController!
-                            popover.barButtonItem = self.actionBarButtonView
+                            popover?.barButtonItem = self.actionBarButtonView
                             
-                            self.presentViewController(nav, animated: true, completion: nil)
+                            self.present(nav, animated: true, completion: nil)
                         } else {
-                            self.presentViewController(activity, animated: true, completion: nil)
+                            self.present(activity, animated: true, completion: nil)
                         }
                     }
                     self.exporting = false
@@ -60,13 +60,13 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             }
         }
         
-        NSNotificationCenter.defaultCenter().addObserverForName("addVideoClicked", object: nil, queue: NSOperationQueue.mainQueue()) { item in
+        NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "addVideoClicked"), object: nil, queue: OperationQueue.main) { item in
             self.browseForVideo()
         }
         
-        NSNotificationCenter.defaultCenter().addObserverForName("previewClicked", object: nil, queue: NSOperationQueue.mainQueue()) { item in
+        NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "previewClicked"), object: nil, queue: OperationQueue.main) { item in
             guard let video = item.object as? Video else { return }
-            self.previewVideoAt(video.videoUrl, animated: true)
+            self.previewVideoAt(video.videoUrl as URL, animated: true)
         }
     }
     
@@ -74,26 +74,26 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         super.didReceiveMemoryWarning()
     }
     
-    override func shouldAutorotate() -> Bool {
-        return UIDevice.currentDevice().orientation == UIDeviceOrientation.Portrait
+    override var shouldAutorotate : Bool {
+        return UIDevice.current.orientation == UIDeviceOrientation.portrait
     }
     
-    override func supportedInterfaceOrientations() -> UIInterfaceOrientationMask {
-        return UIInterfaceOrientationMask.Portrait
+    override var supportedInterfaceOrientations : UIInterfaceOrientationMask {
+        return UIInterfaceOrientationMask.portrait
     }
 
     // MARK:
     // MARK: Bar Button Item Action Outlets
     
-    @IBAction func onTrashClicked(sender: UIBarButtonItem) {
-        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+    @IBAction func onTrashClicked(_ sender: UIBarButtonItem) {
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
-        let destroyAction = UIAlertAction(title: "Reset", style: .Destructive) { (action) in
+        let destroyAction = UIAlertAction(title: "Reset", style: .destructive) { (action) in
             self.startOver()
             self.removeTempFileAtPath("temp.mov")
         }
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action) in
             // no-op
         }
         
@@ -102,43 +102,41 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         
         alertController.popoverPresentationController?.barButtonItem = sender
         
-        self.presentViewController(alertController, animated: true) {
+        self.present(alertController, animated: true) {
             // ...
         }
     }
 
-    var tempVideoPath:NSURL?
+    var tempVideoPath:URL?
     var videoPrepared:Bool = false
-    func prepareVideo() -> Bool {
+    func prepareVideo() {
         if self.videoPrepared {
-            NSNotificationCenter.defaultCenter().postNotificationName("videoExportDone", object: self.tempVideoPath)
-            return true
+            NotificationCenter.default.post(name: Notification.Name(rawValue: "videoExportDone"), object: self.tempVideoPath)
         }
         self.showSpinner()
         self.videoPrepared = self.append(self.videos, andExportTo: tempVideoPath!, with: self.audioTrack)
-        return self.videoPrepared
     }
     
-    @IBAction func onPlayClicked(sender: UIBarButtonItem) {
+    @IBAction func onPlayClicked(_ sender: UIBarButtonItem) {
         self.previewing = true
         self.prepareVideo()
     }
     
-    @IBAction func onActionSelected(sender: UIBarButtonItem) {
+    @IBAction func onActionSelected(_ sender: UIBarButtonItem) {
         
-        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .ActionSheet)
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
-        let shareAction = UIAlertAction(title: "Share", style: .Default) { (action) in
+        let shareAction = UIAlertAction(title: "Share", style: .default) { (action) in
             self.exporting = true
             self.prepareVideo()
         }
         
-        let aboutAction = UIAlertAction(title: "About", style: .Default) { (action) in
+        let aboutAction = UIAlertAction(title: "About", style: .default) { (action) in
             self.showAboutPage()
         }
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
-            alertController.dismissViewControllerAnimated(true, completion: nil)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action) in
+            alertController.dismiss(animated: true, completion: nil)
         }
         
         if videos.count > 0 {
@@ -149,7 +147,7 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         
         alertController.popoverPresentationController?.barButtonItem = sender
         
-        self.presentViewController(alertController, animated: true) {
+        self.present(alertController, animated: true) {
             // ...
         }
         
@@ -158,46 +156,46 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     // MARK:
     // MARK: UITableViewDataSource methods
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.videos.count + 1
     }
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        if (indexPath.row == self.videos.count) {
-            let cell = tableView.dequeueReusableCellWithIdentifier("emptyTableViewCellReuseIdentifier", forIndexPath: indexPath)
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if ((indexPath as NSIndexPath).row == self.videos.count) {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "emptyTableViewCellReuseIdentifier", for: indexPath)
             return cell
         } else {
-            let item = self.videos[indexPath.row]
-            let cell = tableView.dequeueReusableCellWithIdentifier("mrgrCellReuseIdentifier", forIndexPath: indexPath) as! TableViewCell
+            let item = self.videos[(indexPath as NSIndexPath).row]
+            let cell = tableView.dequeueReusableCell(withIdentifier: "mrgrCellReuseIdentifier", for: indexPath) as! TableViewCell
             cell.setVideo(item)
             return cell
         }
     }
     
-    func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return indexPath.row < self.videos.count
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        return (indexPath as NSIndexPath).row < self.videos.count
     }
     
-    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return indexPath.row < self.videos.count
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return (indexPath as NSIndexPath).row < self.videos.count
     }
     
-    func tableView(tableView: UITableView, willBeginEditingRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, willBeginEditingRowAt indexPath: IndexPath) {
         tableView.setEditing(true, animated: true)
         tableView.beginUpdates()
     }
     
-    func tableView(tableView: UITableView, didEndEditingRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
         tableView.endUpdates()
     }
     
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         
-        let row = indexPath.row
+        let row = (indexPath as NSIndexPath).row
         if !(row < self.videos.count) {
             return
         }
@@ -205,40 +203,40 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         
         let video = self.videos[row]
         switch (editingStyle) {
-        case UITableViewCellEditingStyle.Insert:
-            self.videos.removeAtIndex(indexPath.row)
-            self.videos.insert(video, atIndex: row)
+        case UITableViewCellEditingStyle.insert:
+            self.videos.remove(at: (indexPath as NSIndexPath).row)
+            self.videos.insert(video, at: row)
             break
-        case UITableViewCellEditingStyle.Delete:
-            self.videos.removeAtIndex(row)
+        case UITableViewCellEditingStyle.delete:
+            self.videos.remove(at: row)
             tableView.reloadData()
             break
         default: break
         }
     }
     
-    func tableView(tableView: UITableView, shouldShowMenuForRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return indexPath.row < self.videos.count
+    func tableView(_ tableView: UITableView, shouldShowMenuForRowAt indexPath: IndexPath) -> Bool {
+        return (indexPath as NSIndexPath).row < self.videos.count
     }
     
-    func thumbnailAt(indexPath: NSIndexPath) -> UIImage? {
-        if (indexPath.row < videos.count) {
-            return videos[indexPath.row].thumbnail
+    func thumbnailAt(_ indexPath: IndexPath) -> UIImage? {
+        if ((indexPath as NSIndexPath).row < videos.count) {
+            return videos[(indexPath as NSIndexPath).row].thumbnail
         } else {
             return UIImage(named: "Select a Video")
         }
     }
     
     // variable row height
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return cellHeightFor(tableView, image: thumbnailAt(indexPath))
     }
     
-    func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return cellHeightFor(tableView, image: thumbnailAt(indexPath))
     }
     
-    func cellHeightFor(tableView: UITableView, image: UIImage?) -> CGFloat {
+    func cellHeightFor(_ tableView: UITableView, image: UIImage?) -> CGFloat {
         let tableWidth: CGFloat = tableView.frame.width
         
         let size = image?.size
@@ -257,10 +255,10 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     func browseForVideo() {
         let picker = UIImagePickerController()
         picker.delegate = self
-        picker.sourceType = .PhotoLibrary
+        picker.sourceType = .photoLibrary
         picker.mediaTypes = [kUTTypeMovie as String]
         picker.allowsEditing = true
-        self.presentViewController(picker, animated: true) { () -> Void in
+        self.present(picker, animated: true) { () -> Void in
             // no-op
         }
     }
@@ -269,34 +267,34 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         let pickerController = MPMediaPickerController()
         pickerController.delegate = self
         pickerController.allowsPickingMultipleItems = false
-        self.presentViewController(pickerController, animated: true, completion: nil)
+        self.present(pickerController, animated: true, completion: nil)
     }
     
     // MARK: MPMediaPickerControllerDelegate
-    func mediaPicker(mediaPicker: MPMediaPickerController, didPickMediaItems mediaItemCollection: MPMediaItemCollection){
+    func mediaPicker(_ mediaPicker: MPMediaPickerController, didPickMediaItems mediaItemCollection: MPMediaItemCollection){
         self.audioTrack = mediaItemCollection.items.first
         self.dismiss(mediaPicker)
     }
     
-    func mediaPickerDidCancel(mediaPicker: MPMediaPickerController) {
+    func mediaPickerDidCancel(_ mediaPicker: MPMediaPickerController) {
         self.dismiss(mediaPicker)
     }
     
-    func dismiss(mediaPicker: MPMediaPickerController) {
-        mediaPicker.dismissViewControllerAnimated(true, completion: nil)
+    func dismiss(_ mediaPicker: MPMediaPickerController) {
+        mediaPicker.dismiss(animated: true, completion: nil)
     }
     
     // MARK: UIVideoEditorController
     
-    func openEditorFor(video: Video) {
+    func openEditorFor(_ video: Video) {
         
-        guard let path = video.videoUrl.path else { return }
+        let path = video.videoUrl.path
         
         let editor = UIVideoEditorController()
         editor.delegate = self
-        if UIVideoEditorController.canEditVideoAtPath(path) {
+        if UIVideoEditorController.canEditVideo(atPath: path) {
             editor.videoPath = path
-            self.presentViewController(editor, animated: true) {
+            self.present(editor, animated: true) {
                 
             }
         }
@@ -304,28 +302,28 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     
     // MARK: UIImagePicker Delegate methods
     
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         self.videoPrepared = false
-        var path: NSURL?
+        var path: URL?
         let mediaType = info[UIImagePickerControllerMediaType] as! CFString
         if (mediaType == kUTTypeMovie) {
             // trimmed/edited videos
-            if let trimmedUrl = info[UIImagePickerControllerMediaURL] as? NSURL {
+            if let trimmedUrl = info[UIImagePickerControllerMediaURL] as? URL {
                 path = trimmedUrl
-            } else if let referenceUrl = info[UIImagePickerControllerReferenceURL] as? NSURL {
+            } else if let referenceUrl = info[UIImagePickerControllerReferenceURL] as? URL {
                 path = referenceUrl
             }
         }
         
-        picker.dismissViewControllerAnimated(true) { () -> Void in
+        picker.dismiss(animated: true) { () -> Void in
             if let path = path {
                 self.onVideoSelected(path)
             }
         }
     }
     
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        picker.dismissViewControllerAnimated(true) { () -> Void in
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true) { () -> Void in
             
         }
     }
@@ -341,18 +339,18 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     }
     
     func disableButtons() {
-        self.trashBarButtonView.enabled = false
-        self.playBarButtonView.enabled = false
+        self.trashBarButtonView.isEnabled = false
+        self.playBarButtonView.isEnabled = false
 //        self.actionBarButtonView.enabled = false
     }
     
     func enableButtons() {
-        self.trashBarButtonView.enabled = true
-        self.playBarButtonView.enabled = true
-        self.actionBarButtonView.enabled = true
+        self.trashBarButtonView.isEnabled = true
+        self.playBarButtonView.isEnabled = true
+        self.actionBarButtonView.isEnabled = true
     }
     
-    func onVideoSelected(path: NSURL) {
+    func onVideoSelected(_ path: URL) {
         let video = Video(url: path)
         
         self.videos.append(video)
@@ -366,15 +364,15 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     
     var loadingIndicatorView: ProgressViewController?
     func showSpinner() {
-        dispatch_async(dispatch_get_main_queue(),{
+        DispatchQueue.main.async(execute: {
             //LoadingIndicatorView
-            self.loadingIndicatorView = ProgressViewController(nibName: "ProgressIndicatorView", bundle: NSBundle.mainBundle())
-            self.loadingIndicatorView!.modalPresentationStyle = .OverCurrentContext
-            self.presentViewController(self.loadingIndicatorView!, animated: true, completion: nil)
+            self.loadingIndicatorView = ProgressViewController(nibName: "ProgressIndicatorView", bundle: Bundle.main)
+            self.loadingIndicatorView!.modalPresentationStyle = .overCurrentContext
+            self.present(self.loadingIndicatorView!, animated: true, completion: nil)
         })
     }
     
-    func hideSpinner(completion: (() -> Void)?) {
+    func hideSpinner(_ completion: (() -> Void)?) {
         let completionAndCleanup: () -> Void = {
             completion?()
             self.loadingIndicatorView = nil
@@ -383,40 +381,40 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             completionAndCleanup()
             return
         }
-        loadingIndicatorView.dismissViewControllerAnimated(false, completion: completionAndCleanup)
+        loadingIndicatorView.dismiss(animated: false, completion: completionAndCleanup)
     }
     
-    func previewVideoAt(url: NSURL, animated: Bool) {
-        let videoPreviewer = VideoPreviewerViewController(nibName: "VideoPreviewView", bundle: NSBundle.mainBundle())
+    func previewVideoAt(_ url: URL, animated: Bool) {
+        let videoPreviewer = VideoPreviewerViewController(nibName: "VideoPreviewView", bundle: Bundle.main)
         videoPreviewer.url = url
-        self.presentViewController(videoPreviewer, animated: animated, completion: nil)
+        self.present(videoPreviewer, animated: animated, completion: nil)
     }
     
     // MARK: AVFoundation Video Manipulation Code
     
-    func append(assets: [Video], andExportTo outputUrl: NSURL, with backgroundAudio: MPMediaItem?) -> Bool {
+    func append(_ assets: [Video], andExportTo outputUrl: URL, with backgroundAudio: MPMediaItem?) -> Bool {
         let mixComposition = AVMutableComposition()
         
-        let videoTrack = mixComposition.addMutableTrackWithMediaType(AVMediaTypeVideo, preferredTrackID: kCMPersistentTrackID_Invalid)
-        let audioTrack = mixComposition.addMutableTrackWithMediaType(AVMediaTypeAudio, preferredTrackID: kCMPersistentTrackID_Invalid)
+        let videoTrack = mixComposition.addMutableTrack(withMediaType: AVMediaTypeVideo, preferredTrackID: kCMPersistentTrackID_Invalid)
+        let audioTrack = mixComposition.addMutableTrack(withMediaType: AVMediaTypeAudio, preferredTrackID: kCMPersistentTrackID_Invalid)
         
 //        var maxWidth: CGFloat = 0;
 //        var maxHeight: CGFloat = 0;
 //        
         // run through all the assets selected
-        assets.reverse().forEach {(video) in
+        assets.reversed().forEach {(video) in
             
             let timeRange = CMTimeRangeMake(kCMTimeZero, video.duration)
             
             // add all video tracks in asset
-            let videoMediaTracks = video.asset.tracksWithMediaType(AVMediaTypeVideo)
+            let videoMediaTracks = video.asset.tracks(withMediaType: AVMediaTypeVideo)
             videoMediaTracks.forEach{ (videoMediaTrack) in
                 
 //                maxWidth = max(videoMediaTrack.naturalSize.width, maxWidth)
 //                maxHeight = max(videoMediaTrack.naturalSize.height, maxHeight)
                 
                 do {
-                    try videoTrack.insertTimeRange(timeRange, ofTrack: videoMediaTrack, atTime: kCMTimeZero)
+                    try videoTrack.insertTimeRange(timeRange, of: videoMediaTrack, at: kCMTimeZero)
                 } catch _  {
                     return
                 }
@@ -427,10 +425,10 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             }
             
             // add all audio tracks in asset
-            let audioMediaTracks = video.asset.tracksWithMediaType(AVMediaTypeAudio)
+            let audioMediaTracks = video.asset.tracks(withMediaType: AVMediaTypeAudio)
             audioMediaTracks.forEach {(audioMediaTrack) in
                 do {
-                    try audioTrack.insertTimeRange(timeRange, ofTrack: audioMediaTrack, atTime: kCMTimeZero)
+                    try audioTrack.insertTimeRange(timeRange, of: audioMediaTrack, at: kCMTimeZero)
                 } catch _ {
                     return
                 }
@@ -447,9 +445,9 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         exporter.outputURL = outputUrl
         exporter.outputFileType = AVFileTypeQuickTimeMovie
         exporter.shouldOptimizeForNetworkUse = true
-        exporter.exportAsynchronouslyWithCompletionHandler({
+        exporter.exportAsynchronously(completionHandler: {
             switch exporter.status {
-            case .Completed:
+            case .completed:
                 // we can be confident that there is a URL because
                 // we got this far. Otherwise it would've failed.
                 let url = exporter.outputURL!
@@ -457,25 +455,25 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
                 if exporter.error != nil {
                     print("MrgrViewController.exportVideo Error: \(exporter.error)")
                     print("MrgrViewController.exportVideo Description: \(exporter.description)")
-                    NSNotificationCenter.defaultCenter().postNotificationName("videoExportDone", object: exporter.error)
+                    NotificationCenter.default.post(name: Notification.Name(rawValue: "videoExportDone"), object: exporter.error)
                 } else {
-                    NSNotificationCenter.defaultCenter().postNotificationName("videoExportDone", object: url)
+                    NotificationCenter.default.post(name: Notification.Name(rawValue: "videoExportDone"), object: url)
                 }
                 
                 break
                 
-            case .Exporting:
+            case .exporting:
                 let progress = exporter.progress
                 print("MrgrViewController.exportVideo \(progress)")
                 
-                NSNotificationCenter.defaultCenter().postNotificationName("videoExportProgress", object: progress)
+                NotificationCenter.default.post(name: Notification.Name(rawValue: "videoExportProgress"), object: progress)
                 break
                 
-            case .Failed:
+            case .failed:
                 print("MrgrViewController.exportVideo Error: \(exporter.error)")
                 print("MrgrViewController.exportVideo Description: \(exporter.description)")
                 
-                NSNotificationCenter.defaultCenter().postNotificationName("videoExportDone", object: exporter)
+                NotificationCenter.default.post(name: Notification.Name(rawValue: "videoExportDone"), object: exporter)
                 break
                 
             default: break
@@ -484,18 +482,18 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         return true
     }
     
-    func getPathForTempFileNamed(filename: String) -> NSURL {
+    func getPathForTempFileNamed(_ filename: String) -> URL {
         let outputPath = NSTemporaryDirectory() + filename
-        let outputUrl = NSURL(fileURLWithPath: outputPath)
+        let outputUrl = URL(fileURLWithPath: outputPath)
         removeTempFileAtPath(outputPath)
         return outputUrl
     }
     
-    func removeTempFileAtPath(path: String) {
-        let fileManager = NSFileManager.defaultManager()
-        if (fileManager.fileExistsAtPath(path)) {
+    func removeTempFileAtPath(_ path: String) {
+        let fileManager = FileManager.default
+        if (fileManager.fileExists(atPath: path)) {
             do {
-                try fileManager.removeItemAtPath(path)
+                try fileManager.removeItem(atPath: path)
             } catch _ {
             }
         }
@@ -505,8 +503,8 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     // MARK: About Page
     func showAboutPage() {
         let location = "http://mskr.co/private/147372542885/tumblr_oaa9yaYtLh1ts3t7o"
-        guard let url = NSURL(string:location) else { return }
-        UIApplication.sharedApplication().openURL(url)
+        guard let url = URL(string:location) else { return }
+        UIApplication.shared.openURL(url)
     }
 }
 

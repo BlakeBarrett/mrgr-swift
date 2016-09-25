@@ -252,13 +252,13 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     
     var videoImageThumbnailTagBeingPickedFor: Int = 0
     
+    var imagePicker = UIImagePickerController()
     func browseForVideo() {
-        let picker = UIImagePickerController()
-        picker.delegate = self
-        picker.sourceType = .photoLibrary
-        picker.mediaTypes = [kUTTypeMovie as String]
-        picker.allowsEditing = true
-        self.present(picker, animated: true) { () -> Void in
+        self.imagePicker.delegate = self
+        self.imagePicker.sourceType = .photoLibrary
+        self.imagePicker.mediaTypes = [kUTTypeMovie as String]
+        self.imagePicker.allowsEditing = true
+        self.present(self.imagePicker, animated: true) { () -> Void in
             // no-op
         }
     }
@@ -319,12 +319,13 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             if let path = path {
                 self.onVideoSelected(path)
             }
+            self.imagePicker = UIImagePickerController()
         }
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true) { () -> Void in
-            
+            self.imagePicker = UIImagePickerController()
         }
     }
     

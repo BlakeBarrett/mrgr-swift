@@ -14,7 +14,6 @@ class TableViewCell: UITableViewCell {
     
     @IBOutlet weak var thumbnailImageView: UIImageView!
     @IBOutlet weak var durationLabelView: UILabel!
-    
     @IBOutlet weak var playView: UIVisualEffectView!
     
     @IBAction func onPlayButtonClick(_ sender: UIButton) {

@@ -24,50 +24,12 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     
     var previewing = false
     var exporting = false
+    var saving = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.tempVideoPath = getPathForTempFileNamed("temp.mov")
-        
-        NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "videoExportDone"), object: nil, queue: OperationQueue.main) {message in
-            if let url = message.object as? URL {
-                self.hideSpinner(){
-                    if (self.previewing) {
-                        self.previewVideoAt(url, animated: true)
-                    }
-                    if (self.exporting) {
-                        let activity = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-                        if (UIDevice.current.userInterfaceIdiom == .pad) {
-                            let nav = UINavigationController(rootViewController: activity)
-                            nav.modalPresentationStyle = .popover
-                            
-                            let popover = nav.popoverPresentationController as UIPopoverPresentationController!
-                            popover?.barButtonItem = self.actionBarButtonView
-                            
-                            self.present(nav, animated: true, completion: nil)
-                        } else {
-                            self.present(activity, animated: true, completion: nil)
-                        }
-                    }
-                    self.exporting = false
-                    self.previewing = false
-                }
-            } else {
-                self.hideSpinner(){
-                    guard let _ = self.tempVideoPath else { return }
-                    self.previewVideoAt(self.tempVideoPath!, animated: false)
-                }
-            }
-        }
-        
-        NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "addVideoClicked"), object: nil, queue: OperationQueue.main) { item in
-            self.browseForVideo()
-        }
-        
-        NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "previewClicked"), object: nil, queue: OperationQueue.main) { item in
-            guard let video = item.object as? Video else { return }
-            self.previewVideoAt(video.videoUrl as URL, animated: true)
-        }
+        self.initNotificationCenterListeners()
+        self.initPicker()
     }
     
     override func didReceiveMemoryWarning() {
@@ -131,6 +93,11 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             self.prepareVideo()
         }
         
+        let saveAction = UIAlertAction(title: "Save", style: .default) { (action) in
+            self.saving = true
+            self.prepareVideo()
+        }
+        
         let aboutAction = UIAlertAction(title: "About", style: .default) { (action) in
             self.showAboutPage()
         }
@@ -141,6 +108,7 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         
         if videos.count > 0 {
             alertController.addAction(shareAction)
+            alertController.addAction(saveAction)
         }
         alertController.addAction(aboutAction)
         alertController.addAction(cancelAction)
@@ -251,23 +219,24 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     // MARK: Video Thumbnail Image Tap Gesutre Recognizer Action Outlets
     
     var videoImageThumbnailTagBeingPickedFor: Int = 0
-    
     var imagePicker = UIImagePickerController()
-    func browseForVideo() {
+    func initPicker() {
+        self.imagePicker = UIImagePickerController()
         self.imagePicker.delegate = self
         self.imagePicker.sourceType = .photoLibrary
         self.imagePicker.mediaTypes = [kUTTypeMovie as String]
         self.imagePicker.allowsEditing = true
-        self.present(self.imagePicker, animated: true) { () -> Void in
-            // no-op
-        }
+    }
+    
+    func browseForVideo() {
+        self.present(self.imagePicker, animated: true)
     }
     
     func browseForAudio() {
         let pickerController = MPMediaPickerController()
         pickerController.delegate = self
         pickerController.allowsPickingMultipleItems = false
-        self.present(pickerController, animated: true, completion: nil)
+        self.present(pickerController, animated: true)
     }
     
     // MARK: MPMediaPickerControllerDelegate
@@ -319,18 +288,64 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             if let path = path {
                 self.onVideoSelected(path)
             }
-            self.imagePicker = UIImagePickerController()
+            self.initPicker()
         }
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true) { () -> Void in
-            self.imagePicker = UIImagePickerController()
+            self.initPicker()
         }
     }
     
     // MARK:
     // MARK: Program Functions
+    
+    func initNotificationCenterListeners() {
+        self.tempVideoPath = getPathForTempFileNamed("temp.mov")
+        NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "videoExportDone"), object: nil, queue: OperationQueue.main) {message in
+            if let url = message.object as? URL {
+                self.hideSpinner(){
+                    if (self.previewing) {
+                        self.previewVideoAt(url, animated: true)
+                    } else if (self.exporting) {
+                        let activity = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+                        if (UIDevice.current.userInterfaceIdiom == .pad) {
+                            let nav = UINavigationController(rootViewController: activity)
+                            nav.modalPresentationStyle = .popover
+                            
+                            let popover = nav.popoverPresentationController as UIPopoverPresentationController!
+                            popover?.barButtonItem = self.actionBarButtonView
+                            
+                            self.present(nav, animated: true, completion: nil)
+                        } else {
+                            self.present(activity, animated: true, completion: nil)
+                        }
+                    } else if (self.saving) {
+                        let filename = self.getPathStringForFile(named: "temp.mov")
+                        UISaveVideoAtPathToSavedPhotosAlbum(filename, nil, nil, nil);
+                    }
+                    self.saving = false
+                    self.exporting = false
+                    self.previewing = false
+                }
+            } else {
+                self.hideSpinner(){
+                    guard let _ = self.tempVideoPath else { return }
+                    self.previewVideoAt(self.tempVideoPath!, animated: false)
+                }
+            }
+        }
+        
+        NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "addVideoClicked"), object: nil, queue: OperationQueue.main) { item in
+            self.browseForVideo()
+        }
+        
+        NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "previewClicked"), object: nil, queue: OperationQueue.main) { item in
+            guard let video = item.object as? Video else { return }
+            self.previewVideoAt(video.videoUrl as URL, animated: true)
+        }
+    }
     
     func startOver() {
         self.videos.removeAll()
@@ -483,8 +498,12 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         return true
     }
     
+    func getPathStringForFile(named filename: String) -> String {
+        return NSTemporaryDirectory() + filename
+    }
+    
     func getPathForTempFileNamed(_ filename: String) -> URL {
-        let outputPath = NSTemporaryDirectory() + filename
+        let outputPath = getPathStringForFile(named: filename)
         let outputUrl = URL(fileURLWithPath: outputPath)
         removeTempFileAtPath(outputPath)
         return outputUrl

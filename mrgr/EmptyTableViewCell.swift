@@ -11,7 +11,7 @@ import UIKit
 class EmptyTableViewCell: UITableViewCell {
     
     @IBOutlet weak var addButtonView: UIButton!
-    @IBAction func onAddButtonClicked(sender: UIButton) {
-        NSNotificationCenter.defaultCenter().postNotificationName("addVideoClicked", object: nil)
+    @IBAction func onAddButtonClicked(_ sender: UIButton) {
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "addVideoClicked"), object: nil)
     }
 }

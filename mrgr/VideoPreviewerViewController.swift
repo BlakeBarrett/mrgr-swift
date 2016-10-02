@@ -12,15 +12,15 @@ import AVKit
 
 class VideoPreviewerViewController: AVPlayerViewController {
     
-    var url: NSURL? {
+    var url: URL? {
         didSet {
             guard let _ = self.url else { return }
-            self.player = AVPlayer(URL: self.url!)
-            self.player?.muted = false
+            self.player = AVPlayer(url: self.url!)
+            self.player?.isMuted = false
         }
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         player?.play()
     }
 }

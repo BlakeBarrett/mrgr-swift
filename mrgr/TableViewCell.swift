@@ -17,11 +17,11 @@ class TableViewCell: UITableViewCell {
     
     @IBOutlet weak var playView: UIVisualEffectView!
     
-    @IBAction func onPlayButtonClick(sender: UIButton) {
-        NSNotificationCenter.defaultCenter().postNotificationName("previewClicked", object: item)
+    @IBAction func onPlayButtonClick(_ sender: UIButton) {
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "previewClicked"), object: item)
     }
     
-    func setVideo(item:Video) {
+    func setVideo(_ item:Video) {
         self.item = item
         self.thumbnailImageView.image = item.thumbnail
         
@@ -31,7 +31,7 @@ class TableViewCell: UITableViewCell {
         mask(self.playView)
     }
     
-    class func parseDuration(value: Int) -> String {
+    class func parseDuration(_ value: Int) -> String {
         let hours = (value / 3600)
         let minutes = ((value % 3600) / 60)
         let seconds = (value % 60)
@@ -51,26 +51,26 @@ class TableViewCell: UITableViewCell {
         return durationString
     }
     
-    class func createTriangleView(size: CGFloat) -> UIImage {
+    class func createTriangleView(_ size: CGFloat) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(CGSize(width: size, height: size), false, 0)
         let context = UIGraphicsGetCurrentContext()
         
-        CGContextMoveToPoint(context, 0, 0)
-        CGContextAddLineToPoint(context, size, size / 2)
-        CGContextAddLineToPoint(context, 0, size)
-        CGContextAddLineToPoint(context, 0, 0)
-        CGContextFillPath(context)
+        context?.move(to: CGPoint(x: 0, y: 0))
+        context?.addLine(to: CGPoint(x: size, y: size / 2))
+        context?.addLine(to: CGPoint(x: 0, y: size))
+        context?.addLine(to: CGPoint(x: 0, y: 0))
+        context?.fillPath()
         
-        CGContextSetStrokeColorWithColor(context, UIColor.blackColor().CGColor)
-        CGContextStrokePath(context)
+        context?.setStrokeColor(UIColor.black.cgColor)
+        context?.strokePath()
         
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
-        return image
+        return image!
     }
     
-    func mask(view: UIView) {
+    func mask(_ view: UIView) {
         let size = view.frame.size.width
         
         let image = TableViewCell.createTriangleView(size)

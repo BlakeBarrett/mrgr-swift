@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 
 class Video {
-    var videoUrl: NSURL
+    var videoUrl: URL
     var asset: AVAsset
     var duration: CMTime {
         get {
@@ -20,9 +20,9 @@ class Video {
     var thumbnail: UIImage
     var muted = false
     
-    init(url:NSURL) {
+    init(url:URL) {
         self.videoUrl = url
-        self.asset = AVURLAsset(URL: url)
+        self.asset = AVURLAsset(url: url)
         
         var time = self.asset.duration
         time.value = min(time.value, 2)
@@ -30,8 +30,8 @@ class Video {
         let imageGenerator = AVAssetImageGenerator(asset: asset)
         imageGenerator.appliesPreferredTrackTransform = true
         do {
-            let imageRef = try imageGenerator.copyCGImageAtTime(time, actualTime: nil)
-            self.thumbnail = UIImage(CGImage: imageRef)
+            let imageRef = try imageGenerator.copyCGImage(at: time, actualTime: nil)
+            self.thumbnail = UIImage(cgImage: imageRef)
         } catch _ as NSError {
             self.thumbnail = UIImage(named: "Select a Video")!
         }

@@ -314,7 +314,7 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
                             let nav = UINavigationController(rootViewController: activity)
                             nav.modalPresentationStyle = .popover
                             
-                            let popover = nav.popoverPresentationController as UIPopoverPresentationController!
+                            let popover = nav.popoverPresentationController
                             popover?.barButtonItem = self.actionBarButtonView
                             
                             self.present(nav, animated: true, completion: nil)
@@ -411,8 +411,8 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     func append(_ assets: [Video], andExportTo outputUrl: URL, with backgroundAudio: MPMediaItem?) -> Bool {
         let mixComposition = AVMutableComposition()
         
-        let videoTrack = mixComposition.addMutableTrack(withMediaType: AVMediaTypeVideo, preferredTrackID: kCMPersistentTrackID_Invalid)
-        let audioTrack = mixComposition.addMutableTrack(withMediaType: AVMediaTypeAudio, preferredTrackID: kCMPersistentTrackID_Invalid)
+        let videoTrack = mixComposition.addMutableTrack(withMediaType: AVMediaType.video, preferredTrackID: kCMPersistentTrackID_Invalid)
+        let audioTrack = mixComposition.addMutableTrack(withMediaType: AVMediaType.audio, preferredTrackID: kCMPersistentTrackID_Invalid)
         
 //        var maxWidth: CGFloat = 0;
 //        var maxHeight: CGFloat = 0;
@@ -423,14 +423,14 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             let timeRange = CMTimeRangeMake(kCMTimeZero, video.duration)
             
             // add all video tracks in asset
-            let videoMediaTracks = video.asset.tracks(withMediaType: AVMediaTypeVideo)
+            let videoMediaTracks = video.asset.tracks(withMediaType: AVMediaType.video)
             videoMediaTracks.forEach{ (videoMediaTrack) in
                 
 //                maxWidth = max(videoMediaTrack.naturalSize.width, maxWidth)
 //                maxHeight = max(videoMediaTrack.naturalSize.height, maxHeight)
                 
                 do {
-                    try videoTrack.insertTimeRange(timeRange, of: videoMediaTrack, at: kCMTimeZero)
+                    try videoTrack?.insertTimeRange(timeRange, of: videoMediaTrack, at: kCMTimeZero)
                 } catch _  {
                     return
                 }
@@ -441,10 +441,10 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             }
             
             // add all audio tracks in asset
-            let audioMediaTracks = video.asset.tracks(withMediaType: AVMediaTypeAudio)
+            let audioMediaTracks = video.asset.tracks(withMediaType: AVMediaType.audio)
             audioMediaTracks.forEach {(audioMediaTrack) in
                 do {
-                    try audioTrack.insertTimeRange(timeRange, of: audioMediaTrack, at: kCMTimeZero)
+                    try audioTrack?.insertTimeRange(timeRange, of: audioMediaTrack, at: kCMTimeZero)
                 } catch _ {
                     return
                 }
@@ -459,7 +459,7 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         
         guard let exporter = AVAssetExportSession(asset: mixComposition, presetName: AVAssetExportPresetHighestQuality) else { return false }
         exporter.outputURL = outputUrl
-        exporter.outputFileType = AVFileTypeQuickTimeMovie
+        exporter.outputFileType = AVFileType.mov
         exporter.shouldOptimizeForNetworkUse = true
         exporter.exportAsynchronously(completionHandler: {
             switch exporter.status {

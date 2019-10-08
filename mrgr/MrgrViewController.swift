@@ -161,7 +161,7 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         tableView.endUpdates()
     }
     
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
         let row = (indexPath as NSIndexPath).row
         if !(row < self.videos.count) {
@@ -171,11 +171,11 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         
         let video = self.videos[row]
         switch (editingStyle) {
-        case UITableViewCellEditingStyle.insert:
+        case UITableViewCell.EditingStyle.insert:
             self.videos.remove(at: (indexPath as NSIndexPath).row)
             self.videos.insert(video, at: row)
             break
-        case UITableViewCellEditingStyle.delete:
+        case UITableViewCell.EditingStyle.delete:
             self.videos.remove(at: row)
             tableView.reloadData()
             break
@@ -271,15 +271,18 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     
     // MARK: UIImagePicker Delegate methods
     
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        // Local variable inserted by Swift 4.2 migrator.
+        let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
+
         self.videoPrepared = false
         var path: URL?
-        let mediaType = info[UIImagePickerControllerMediaType] as! CFString
+        let mediaType = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.mediaType)] as! CFString
         if (mediaType == kUTTypeMovie) {
             // trimmed/edited videos
-            if let trimmedUrl = info[UIImagePickerControllerMediaURL] as? URL {
+            if let trimmedUrl = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.mediaURL)] as? URL {
                 path = trimmedUrl
-            } else if let referenceUrl = info[UIImagePickerControllerReferenceURL] as? URL {
+            } else if let referenceUrl = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.referenceURL)] as? URL {
                 path = referenceUrl
             }
         }
@@ -314,8 +317,9 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
                             let nav = UINavigationController(rootViewController: activity)
                             nav.modalPresentationStyle = .popover
                             
-                            let popover = nav.popoverPresentationController
-                            popover?.barButtonItem = self.actionBarButtonView
+                            if nav.popoverPresentationController != nil {
+                                nav.popoverPresentationController?.barButtonItem = self.actionBarButtonView
+                            }
                             
                             self.present(nav, animated: true, completion: nil)
                         } else {
@@ -420,7 +424,7 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         // run through all the assets selected
         assets.reversed().forEach {(video) in
             
-            let timeRange = CMTimeRangeMake(kCMTimeZero, video.duration)
+            let timeRange = CMTimeRangeMake(start: CMTime.zero, duration: video.duration)
             
             // add all video tracks in asset
             let videoMediaTracks = video.asset.tracks(withMediaType: AVMediaType.video)
@@ -430,7 +434,7 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
 //                maxHeight = max(videoMediaTrack.naturalSize.height, maxHeight)
                 
                 do {
-                    try videoTrack?.insertTimeRange(timeRange, of: videoMediaTrack, at: kCMTimeZero)
+                    try videoTrack?.insertTimeRange(timeRange, of: videoMediaTrack, at: CMTime.zero)
                 } catch _  {
                     return
                 }
@@ -444,7 +448,7 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             let audioMediaTracks = video.asset.tracks(withMediaType: AVMediaType.audio)
             audioMediaTracks.forEach {(audioMediaTrack) in
                 do {
-                    try audioTrack?.insertTimeRange(timeRange, of: audioMediaTrack, at: kCMTimeZero)
+                    try audioTrack?.insertTimeRange(timeRange, of: audioMediaTrack, at: CMTime.zero)
                 } catch _ {
                     return
                 }
@@ -528,3 +532,13 @@ class MrgrViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     }
 }
 
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
+	return input.rawValue
+}
